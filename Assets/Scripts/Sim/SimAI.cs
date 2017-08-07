@@ -11,16 +11,17 @@ public class SimAI : MonoBehaviour {
     float moveTime;
 
     //PATHFINDING STUFF
-    bool isIdle;
+    public bool isIdle;
 
     public Vector2 targetPos;
-    bool isGettingFood;
+    public bool isGettingFood;
 
     /* //GUI SCRIPT INSTANCE
      MainGUI guiScript = new MainGUI();*/
 
     //SIM STATS SCRIPT INSTANCE
     SimStats simStatsScript;
+
     //SimManager simManagerScript;
 
 
@@ -103,6 +104,9 @@ public class SimAI : MonoBehaviour {
         for (;;)
         {
             simStatsScript.hunger -= 1;
+
+            simStatsScript.hunger = Mathf.Clamp(simStatsScript.hunger, 0, 100);
+
             //simManagerScript.simStatsScript.hunger -= 1;
             yield return new WaitForSeconds(waitTime);
         }
@@ -325,6 +329,6 @@ public class SimAI : MonoBehaviour {
 
 
 
-   
+
 
 }

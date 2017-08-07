@@ -12,12 +12,17 @@ public class GameStats : MonoBehaviour {
     public static bool hasFridge;
     public static int countFridge;
 
+    public static bool hasWidgetBench;
+    public static int countWidgetBench;
+
     //ITEM/STRUCTURE ARRAYS -- used, for example, to get item position in the SimAI script
     public static List<GameObject> fridgeList = new List<GameObject>();
+    public static List<GameObject> widgetBenchList = new List<GameObject>();
 
     void Awake()
     {
         countFridge = -1;
+        countWidgetBench = -1;
     }
 
 	// Use this for initialization
@@ -28,6 +33,8 @@ public class GameStats : MonoBehaviour {
 
         hasFridge = false;
         //countFridge = -1;
+
+        hasWidgetBench = false;
 	    
 	}
 	
@@ -39,6 +46,14 @@ public class GameStats : MonoBehaviour {
             if (fridgeList[i] == null)
                 fridgeList.RemoveAt(i);
         }
+
+        print(countWidgetBench);
+        for (var i = widgetBenchList.Count - 1; i > -1; i--)
+        {
+            if (widgetBenchList[i] == null)
+                widgetBenchList.RemoveAt(i);
+        }
+
     }
 
 }

@@ -6,19 +6,66 @@ public class SimManager : MonoBehaviour {
 
     //SCRIPT INSTANCES
     public SimStats simStatsScript;
+    public SimAI simAIScript;
+
 
     //GUI STUFF
+    GameObject canvasObj;
+    public Canvas canvas;
+
+    GameObject simNameTextObj;
     public Text simNameText;
+
+    GameObject simStatusTextObj;
+    public Text simStatusText;
+
+    GameObject simEnergyTextObj;
     public Text simEnergyText;
+
+    GameObject simHungerTextObj;
     public Text simHungerText;
+
     public bool isSimSelected = false;
+    //public static bool isSimNotSelected = true;
 
     int hungerHere;
 
     // Use this for initialization
     void Start () {
 
+        //GET SCRIPT COMPONENTS
         simStatsScript = gameObject.GetComponent<SimStats>();
+        simAIScript = gameObject.GetComponent<SimAI>();
+
+        //GET CANVAS OBJECT
+        canvasObj = transform.GetChild(0).gameObject;
+
+        //GET TEXT OBJECT COMPONENTS
+        simNameTextObj = transform.GetChild(0).GetChild(0).gameObject;
+        //simNameTextObj = GameObject.Find("SimText");
+
+        simStatusTextObj = transform.GetChild(0).GetChild(1).gameObject;
+        //simStatusTextObj = GameObject.Find("SimStatusText");
+
+        simEnergyTextObj = transform.GetChild(0).GetChild(2).gameObject;
+        //simEnergyTextObj = GameObject.Find("EnergyText");
+
+        simHungerTextObj = transform.GetChild(0).GetChild(3).gameObject;
+        //simHungerTextObj = GameObject.Find("HungerText");
+
+
+        //GET ACTUAL CANVAS FROM CANVAS OBJECT
+        canvas = canvasObj.GetComponent<Canvas>();
+
+        //SET CANVAS RENDER CAMERA
+        canvas.renderMode = RenderMode.ScreenSpaceCamera;
+        canvas.worldCamera = Camera.main;
+
+        //GET ACTUAL TEXT COMPONENTS FROM OBJECTS
+        simNameText = simNameTextObj.GetComponent<Text>();
+        simStatusText = simStatusTextObj.GetComponent<Text>();
+        simEnergyText = simEnergyTextObj.GetComponent<Text>();
+        simHungerText = simHungerTextObj.GetComponent<Text>();
 
         //INITIALIZATION OF NEEDS
         simStatsScript.energy = 100;
@@ -37,25 +84,31 @@ public class SimManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        StatsTextUpdate();
-
-        //if Testy is selected then simNameText.text = SimStats(instance of the selected sim).simName
+        //if Sim is selected then simNameText.text = SimStats(instance of the selected sim).simName
         if (isSimSelected == true)
         {
+            
+            StatsTextUpdate();
+
             simNameText.enabled = true;
             simEnergyText.enabled = true;
             simHungerText.enabled = true;
+            simStatusText.enabled = true;
         }
         else if (isSimSelected == false)
         {
             simNameText.enabled = false;
             simEnergyText.enabled = false;
             simHungerText.enabled = false;
+            simStatusText.enabled = false;
         }
+
+        
 
         if (Input.GetMouseButtonUp(1))
         {
             isSimSelected = false;
+            
         }
 
     }
@@ -66,6 +119,18 @@ public class SimManager : MonoBehaviour {
         simNameText.text = "Name: " + simStatsScript.simName;
         simEnergyText.text = "Energy: " + simStatsScript.energy + "/" + "100";
         simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
+
+        if (simAIScript.isIdle)
+        {
+            simStatusText.text = "idle";
+        }
+        else if (simAIScript.isIdle == false)
+        {
+            if (simAIScript.isGettingFood)
+            {
+                simStatusText.text = "getting food";
+            }
+        }
     }
 
 
