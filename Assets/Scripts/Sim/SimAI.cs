@@ -16,11 +16,25 @@ public class SimAI : MonoBehaviour {
     public Vector2 targetPos;
     public bool isGettingFood;
 
+    //ITEM STUFF
+    //GENERAL
+    public bool isHolding;
+
+    //FRIDGE 
+
+    //WIDGET BENCH
+    public bool isUsingWidgetBench;
+    public bool isWidgetBenchInProgress;
+    public bool needToHaul;
+
     /* //GUI SCRIPT INSTANCE
      MainGUI guiScript = new MainGUI();*/
 
     //SIM STATS SCRIPT INSTANCE
     SimStats simStatsScript;
+
+    //ITEM SCRIPT INSTANCES
+    //WidgetBenchScript widgetBenchScript;
 
     //SimManager simManagerScript;
 
@@ -49,6 +63,20 @@ public class SimAI : MonoBehaviour {
 
     void FixedUpdate()
     {
+        //UPDATE simPos
+        simStatsScript.simPos = gameObject.transform.position;
+
+        //SET isHolding BOOL
+        if (simStatsScript.itemInPossession != null)
+        {
+            isHolding = true;
+        }
+        else if (simStatsScript.itemInPossession == null)
+        {
+            isHolding = false;
+        }
+        
+
         //if no task then IdleWander()
         if (isIdle)
         {
@@ -61,7 +89,7 @@ public class SimAI : MonoBehaviour {
         //ENERGY
 
         //HUNGER
-        if (simStatsScript.hunger < 95)
+        if (simStatsScript.hunger < 40)
         {
             //check for food
             if (GameStats.hasFridge == true)
@@ -70,20 +98,32 @@ public class SimAI : MonoBehaviour {
                 isIdle = false;
                 isGettingFood = true;
           
-                GetTargetPos();
+                GetTargetPosFridge();
                 GoToward(targetPos);
             }
             
         }
 
-        //if in transit then GoToward()
-        /*if (inTransit)
+        //IF NEEDS ARE MET THEN WORK ON HIGHEST PRIORITY TASK POSSIBLE
+        if (simStatsScript.hunger >= 40 && simStatsScript.energy >= 30)
         {
-            
-            GoToward(targetPos);
-        }*/
-        
+            if (simStatsScript.canLabor)
+            {
+                if (GameStats.hasWidgetBench && needToHaul)
+                {
+                    HaulWidget();
+                }
+                if (GameStats.hasWidgetBench && !needToHaul)
+                {
+                    isIdle = false;
+                    isUsingWidgetBench = true;
 
+                    GetTargetPosWidgetBench();
+                    GoToward(targetPos);
+                }
+            }
+        }
+        
       
 
     }
@@ -112,27 +152,27 @@ public class SimAI : MonoBehaviour {
         }
     }
 
-    //IF IN TRANSIT
+    //IF IN TRANSIT ----------------------------------------------------------------------------------------------------------------
     public void GoToward(Vector2 targetPos)
     {
         //rb2D.MovePosition(targetPos);
-        Vector2 simPos = gameObject.transform.position;
-        transform.position = Vector2.MoveTowards(simPos, targetPos, moveSpeed * Time.deltaTime);
+        //Vector2 simPos = gameObject.transform.position;
+        transform.position = Vector2.MoveTowards(simStatsScript.simPos, targetPos, moveSpeed * Time.deltaTime);
     }
 
-    public void GetTargetPos()
+    public void GetTargetPosFridge()
     {
         FridgeScript fridgeScript;
-        Vector2 simPos = gameObject.transform.position;
+        //Vector2 simPos = gameObject.transform.position;
         Vector2 testPos = new Vector2(0, 0);
         float mag1 = 0;
         float mag2 = 9999;
 
-        //for each fridge in fridgeArray, compare positions to determine which is closest
+        //for each fridge in fridgeList, compare positions to determine which is closest
         foreach (GameObject fridge in GameStats.fridgeList)
         {
             fridgeScript = fridge.GetComponent<FridgeScript>();
-            mag1 = Vector2.Distance(simPos, fridgeScript.fridgePos);
+            mag1 = Vector2.Distance(simStatsScript.simPos, fridgeScript.fridgePos);
             if (mag1 < mag2)
             {
                 mag2 = mag1;
@@ -141,12 +181,78 @@ public class SimAI : MonoBehaviour {
             
         }
     }
+    
 
-    //COLLISION LOGIC
+    public void GetTargetPosWidgetBench()
+    {
+        WidgetBenchScript widgetBenchScript;
+        //Vector2 simPos = gameObject.transform.position;
+        Vector2 testPos = new Vector2(0, 0);
+        float mag1 = 0;
+        float mag2 = 9999;
+
+        //for each wb in wbList, compare positions to determine which is closest
+        foreach (GameObject widgetBench in GameStats.widgetBenchList)
+        {
+            widgetBenchScript = widgetBench.GetComponent<WidgetBenchScript>();
+            mag1 = Vector2.Distance(simStatsScript.simPos, widgetBenchScript.widgetBenchPos);
+            if (mag1 < mag2)
+            {
+                mag2 = mag1;
+                targetPos = widgetBenchScript.widgetBenchUsePos;
+            }
+        }
+    }
+
+    public void GetTargetPosHaulDropoff()
+    {
+        //if there is a zone, go to nearest empty tile in zone
+
+        //else if no zone then drop next to bench
+        //THIS IS JUST LIKE WidgetBenchTargetPos EXCEPT THE LINE THAT SETS THE TARGET POSITION
+        WidgetBenchScript widgetBenchScript;
+        Vector2 testPos = new Vector2(0, 0);
+        float mag1 = 0;
+        float mag2 = 9999;
+
+        //for each wb in wbList, compare positions to determine which is closest
+        foreach (GameObject widgetBench in GameStats.widgetBenchList)
+        {
+            widgetBenchScript = widgetBench.GetComponent<WidgetBenchScript>();
+            mag1 = Vector2.Distance(simStatsScript.simPos, widgetBenchScript.widgetBenchPos);
+            if (mag1 < mag2)
+            {
+                mag2 = mag1;
+                targetPos = widgetBenchScript.widgetBenchPos;
+            }
+        }
+        //GetTargetPosWidgetBench();
+        targetPos = targetPos + new Vector2(2, 0);
+    }
+    //---------------------------------------------------------------------------------------------------------------------------
+
+        public void HaulWidget()
+    {
+        isUsingWidgetBench = false;
+
+        GetTargetPosHaulDropoff();
+        GoToward(targetPos);
+
+        //if simPos = targetPos, drop the item
+        if (simStatsScript.simPos == targetPos)
+        {
+            needToHaul = false;
+            simStatsScript.itemInPossession = null;
+            isHolding = false;
+        }
+    }
+
+
+    //COLLISION LOGIC ---------------------------------------------------------------------
     void OnCollisionStay2D(Collision2D col)
     {
         //FRIDGE ADDS 60 TO HUNGER
-        if (col.gameObject.name == "fridge")
+        if (col.gameObject.tag == "fridge")
         {
             if (isGettingFood)
             {
@@ -162,7 +268,33 @@ public class SimAI : MonoBehaviour {
                 isIdle = true;
             }
         }
+
+        //WIDGET BENCH IS USED 
+       /* if (col.gameObject.tag == "WidgetBench")
+        {
+            if (isUsingWidgetBench)
+            {
+                //set inProgress to true
+                isWidgetBenchInProgress = true;
+            }
+        }*/
     }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        //WIDGET BENCH IS USED 
+        if (col.gameObject.tag == "WidgetBenchChild")
+        {
+            if (isUsingWidgetBench)
+            {
+                //set inProgress to true
+                isWidgetBenchInProgress = true;
+            }
+        }
+    }
+   
+    //--------------------------------------------------------------------------------------------------------
+
 
     //IF IDLE, THEN WANDER
     public void IdleWander()

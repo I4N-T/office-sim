@@ -3,6 +3,10 @@ using System.Collections;
 
 public class SimStats : MonoBehaviour {
 
+
+    //SIM POSITION
+    public Vector2 simPos;
+
     //PERSONAL STATS
     public string simName;
     public bool isMale;
@@ -49,5 +53,8 @@ public class SimStats : MonoBehaviour {
 
     //FOR MOODLETS
     public bool hasPrivateOffice;
+
+    //INVENTORY
+    public GameObject itemInPossession;
 
 }

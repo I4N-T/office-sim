@@ -25,6 +25,9 @@ public class SimManager : MonoBehaviour {
     GameObject simHungerTextObj;
     public Text simHungerText;
 
+    GameObject simItemTextObj;
+    public Text simItemText;
+
     public bool isSimSelected = false;
     //public static bool isSimNotSelected = true;
 
@@ -53,6 +56,8 @@ public class SimManager : MonoBehaviour {
         simHungerTextObj = transform.GetChild(0).GetChild(3).gameObject;
         //simHungerTextObj = GameObject.Find("HungerText");
 
+        simItemTextObj = transform.GetChild(0).GetChild(4).gameObject;
+
 
         //GET ACTUAL CANVAS FROM CANVAS OBJECT
         canvas = canvasObj.GetComponent<Canvas>();
@@ -66,6 +71,7 @@ public class SimManager : MonoBehaviour {
         simStatusText = simStatusTextObj.GetComponent<Text>();
         simEnergyText = simEnergyTextObj.GetComponent<Text>();
         simHungerText = simHungerTextObj.GetComponent<Text>();
+        simItemText = simItemTextObj.GetComponent<Text>();
 
         //INITIALIZATION OF NEEDS
         simStatsScript.energy = 100;
@@ -77,6 +83,8 @@ public class SimManager : MonoBehaviour {
         simEnergyText.enabled = false;
         simHungerText.enabled = false;
         //simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
+
+        simItemText.enabled = false;
         
 
 	}
@@ -94,6 +102,7 @@ public class SimManager : MonoBehaviour {
             simEnergyText.enabled = true;
             simHungerText.enabled = true;
             simStatusText.enabled = true;
+            simItemText.enabled = true;
         }
         else if (isSimSelected == false)
         {
@@ -101,6 +110,7 @@ public class SimManager : MonoBehaviour {
             simEnergyText.enabled = false;
             simHungerText.enabled = false;
             simStatusText.enabled = false;
+            simItemText.enabled = false;
         }
 
         
@@ -119,6 +129,7 @@ public class SimManager : MonoBehaviour {
         simNameText.text = "Name: " + simStatsScript.simName;
         simEnergyText.text = "Energy: " + simStatsScript.energy + "/" + "100";
         simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
+        
 
         if (simAIScript.isIdle)
         {
@@ -130,6 +141,26 @@ public class SimManager : MonoBehaviour {
             {
                 simStatusText.text = "getting food";
             }
+            if (simAIScript.isUsingWidgetBench)
+            {
+                simStatusText.text = "using widget bench";
+            }
+            if (simAIScript.needToHaul)
+            {
+                if (simStatsScript.itemInPossession != null)
+                {
+                    simStatusText.text = "hauling " + simStatsScript.itemInPossession.name;
+                }              
+            }
+        }
+
+        if (simAIScript.isHolding)
+        {
+            simItemText.text = "Item: " + simStatsScript.itemInPossession.name;
+        }
+        else if (!simAIScript.isHolding)
+        {
+            simItemText.text = "Item: ";
         }
     }
 

@@ -3,10 +3,17 @@ using System.Collections;
 
 public class WidgetBenchScript : MonoBehaviour {
 
-    public Vector2 benchPos;
+    public Vector2 widgetBenchPos;
+    public Vector2 widgetBenchUsePos;
+
+    BoxCollider2D widgetBenchCollider;
 
     //WIDGET PREFABS
-    public GameObject widgetSmall;
+    public GameObject widgetPrefab;
+    GameObject widgetHere;
+
+    //SIMAI SCRIPT
+    public SimAI simAIScript;
 
     //PRODUCTION PROGRESS STUFF
     [Range(0, 100)]
@@ -15,13 +22,14 @@ public class WidgetBenchScript : MonoBehaviour {
     bool isProgressCoroutineStarted;
     Coroutine progressCoroutine = null;
 
-    bool instantiateSwitch;
+    public bool hasWidgetOnIt;
+   
 
     void Start()
     {
-
+        widgetBenchCollider = gameObject.GetComponent<BoxCollider2D>();
         GameStats.hasWidgetBench = true;
-        benchPos = gameObject.transform.position;
+        widgetBenchPos = gameObject.transform.position;
 
         //ADD THIS ITEM TO THE FRIDGE ARRAY IN GAMESTATS
         GameStats.countWidgetBench++;
@@ -34,9 +42,30 @@ public class WidgetBenchScript : MonoBehaviour {
 
     void Update()
     {
+        //Update widget bench position 
+        widgetBenchPos = gameObject.transform.position;
+        widgetBenchUsePos = gameObject.transform.GetChild(0).transform.position;
 
-        benchPos = gameObject.transform.position;
+        //set inProgress bool from SimAI script
+        if (simAIScript != null)
+        {
+            if (simAIScript.isWidgetBenchInProgress)
+            {
+                inProgress = true;
+            }
+            else if (!simAIScript.isWidgetBenchInProgress)
+            {
+                inProgress = false;
+            }
 
+            if (hasWidgetOnIt)
+            {
+                simAIScript.needToHaul = true;
+            }
+            
+        }
+        
+        //if inProgress, then run the widget production method
         if (inProgress)
         {
             WidgetInProduction();
@@ -48,15 +77,29 @@ public class WidgetBenchScript : MonoBehaviour {
             {
                 StopCoroutine(progressCoroutine);
             }
-            
         }
 
-        print("isprogresscoroutinestarted = " + isProgressCoroutineStarted);
+        //determine if widget bench has a widget set on it that needs to be moved before the bench can be used again
+        if (widgetPrefab != null)
+        {
+            Vector3 wPos = new Vector3(widgetHere.transform.position.x, widgetHere.transform.position.y, widgetHere.transform.position.z);
+
+            if (widgetBenchCollider.bounds.Contains(wPos))
+            {
+                hasWidgetOnIt = true;
+            }
+            else if (!widgetBenchCollider.bounds.Contains(wPos))
+            {
+                hasWidgetOnIt = false;
+            }
+        }
+        
         //widget instantiation
         //InstantiateWidget();
 
     }
 
+    //TO DO: at some point need to get reference to which sim is working on it
     void WidgetInProduction()
     {
         if (!isProgressCoroutineStarted)
@@ -69,10 +112,11 @@ public class WidgetBenchScript : MonoBehaviour {
             //stop coroutine and set inProgress to false
             StopCoroutine(progressCoroutine);
             inProgress = false;
+            simAIScript.isWidgetBenchInProgress = false;
 
             //instantiate widget on top of bench
-            //instantiateSwitch = true;
-            Instantiate(widgetSmall, new Vector3(benchPos.x, benchPos.y, 0), Quaternion.identity);
+            widgetPrefab = (GameObject)Resources.Load("Prefabs/widgetSmall");
+            widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x, widgetBenchPos.y, 1), Quaternion.identity) as GameObject;
 
             //set widget quality based on assembler skill
             //set progressCount back to 0
@@ -87,18 +131,31 @@ public class WidgetBenchScript : MonoBehaviour {
         while (inProgress)
         {
             progressCount += 1;
-            print("isrunning");
             yield return new WaitForSeconds(waitTime);
         }
     }
 
-    void InstantiateWidget()
+    //SWITCH THIS PART TO CHILD
+    /*void OnCollisionEnter2D(Collision2D col)
     {
-        if (instantiateSwitch)
+        if (col.gameObject.tag == "Sim")
         {
-            Instantiate(widgetSmall, new Vector3(benchPos.x, benchPos.y, 0), Quaternion.identity);
+            simAIScript = col.gameObject.GetComponent<SimAI>();
+            //inProgress = true;
         }
+    }*/
 
-        instantiateSwitch = false;
-    }
+
+
+    /*void OnCollisionStay2D(Collision2D col)
+    {
+
+        if (col.gameObject.tag == "Widget")
+            {
+                hasWidgetOnIt = true;
+
+            }
+        
+    }*/
+
 }

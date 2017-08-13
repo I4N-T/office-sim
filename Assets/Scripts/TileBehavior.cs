@@ -8,6 +8,9 @@ public class TileBehavior : MonoBehaviour {
     SpriteRenderer rend;
     public Sprite[] highlightSpriteArray;
     public Sprite groundSprite;
+
+    //STORE CONTENTS OF TILE
+    public GameObject itemOnTile;
     
 
     // Use this for initialization
@@ -17,6 +20,10 @@ public class TileBehavior : MonoBehaviour {
 	
 	}
 
+    void Update()
+    {
+        
+    }
 
 	
 	void OnMouseOver()
@@ -39,5 +46,21 @@ public class TileBehavior : MonoBehaviour {
         //Inputs.placingWidgetBench = false;
         rend.sortingOrder = 0;
         rend.sprite = groundSprite;
+    }
+
+    void OnTriggerStay2D(Collider2D col)
+    {
+        if (col.gameObject.tag != "Sim" && itemOnTile == null)
+        {
+            itemOnTile = col.gameObject;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.gameObject.tag != "Sim")
+        {
+            itemOnTile = null;
+        }
     }
 }

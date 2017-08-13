@@ -52,7 +52,9 @@
      <Compile Include="Assets\Scripts\GameManager\MousePosition.cs" />
      <Compile Include="Assets\Scripts\GameManager\TileGenerator.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\FridgeScript.cs" />
+     <Compile Include="Assets\Scripts\ItemScripts\WidgetBenchChildScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\WidgetBenchScript.cs" />
+     <Compile Include="Assets\Scripts\ItemScripts\WidgetScript.cs" />
      <Compile Include="Assets\Scripts\Sim\SimAI.cs" />
      <Compile Include="Assets\Scripts\Sim\SimManager.cs" />
      <Compile Include="Assets\Scripts\Sim\SimStats.cs" />
