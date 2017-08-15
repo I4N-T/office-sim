@@ -3,11 +3,20 @@ using System.Collections;
 
 public class Inputs : MonoBehaviour {
 
+    //NOTE: SCRIPT FOR BENCH, ETC. HOVERING OVER TILES BEFORE PLACEMENT IS CONTAINED IN TileBehavior.cs
+
     //MOUSE POSITION
     Vector3 mousePosition;
+    Vector3 panelRectPos;
+
+
+    //RECTTRANSFORMS FOR KEEPING MOUSE CLICK FROM GOING THROUGH BUTTONS; USEFUL FOR OBJECT PLACEMENT
+    public RectTransform productionPanelRect;
+    public GameObject buttonCanv;
 
     //bools
     public static bool placingWidgetBench = false;
+    //bool isMouseOverUI;
 
     //BUILD STRUCTURES OBJECTS
     public GameObject widgetBenchObject;
@@ -21,8 +30,11 @@ public class Inputs : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        //CONSTANTLY UPDATE MOUSEPOSITION; try using instance of moustposition script as argument to this method
-        MousePositionGet();
+        //UPDATE ISMOUSEOVERUI
+        IsMouseOverUI();
+
+            //CONSTANTLY UPDATE MOUSEPOSITION; try using instance of mouseposition script as argument to this method
+            MousePositionGet();
 
         //CANCEL PLACEMENT IF RIGHT CLICK
         if (Input.GetMouseButtonUp(1))
@@ -40,23 +52,38 @@ public class Inputs : MonoBehaviour {
                 placingWidgetBench = true;
             }
         }
-
+ 
         //PURCHASE AND BUILD WITH LEFT CLICK
-        if (placingWidgetBench == true)
+        if (placingWidgetBench == true && IsMouseOverUI() == false)
         {
-            if (Input.GetMouseButtonUp(0))
+
+            if (Input.GetMouseButtonUp(0) && GUIUtility.hotControl == 0)
             {
                 GameStats.dollars -= 300;
                 Instantiate(widgetBenchObject, mousePosition, Quaternion.identity);
                 placingWidgetBench = false;
+               
             }
         }
 	}
+
 
     void MousePositionGet()
     {
         float mousex = Mathf.Round(MousePosition.mouseposition.x);
         float mousey = Mathf.Round(MousePosition.mouseposition.y);
         mousePosition = new Vector3(mousex, mousey, 1);
+    }
+
+    bool IsMouseOverUI()
+    {
+        if (RectTransformUtility.RectangleContainsScreenPoint(productionPanelRect, Input.mousePosition))
+        {
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
     }
 }

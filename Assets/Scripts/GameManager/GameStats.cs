@@ -32,8 +32,6 @@ public class GameStats : MonoBehaviour {
         stone = 100;
 
         hasFridge = false;
-        //countFridge = -1;
-
         hasWidgetBench = false;
 	    
 	}

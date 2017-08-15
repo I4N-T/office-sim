@@ -30,6 +30,9 @@ public class SimAI : MonoBehaviour {
     /* //GUI SCRIPT INSTANCE
      MainGUI guiScript = new MainGUI();*/
 
+    //ARRAY TO HOLD ALL OTHER SIMS TO KEEP TRACK OF USE INTERFERENCES
+    public GameObject[] otherSimArray;
+
     //SIM STATS SCRIPT INSTANCE
     SimStats simStatsScript;
 
@@ -46,6 +49,9 @@ public class SimAI : MonoBehaviour {
         simStatsScript = gameObject.GetComponent<SimStats>();
         //simManagerScript = gameObject.GetComponent<SimManager>();
 
+        //GET OTHER SIM OBJECTS ARRAY
+        otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
+
         rb2D = GetComponent<Rigidbody2D>();
         timeLeft = 2f;
         moveVal = Random.Range(1, 9);
@@ -60,7 +66,7 @@ public class SimAI : MonoBehaviour {
 
     }
 
-
+    //UPDATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void FixedUpdate()
     {
         //UPDATE simPos
@@ -96,6 +102,8 @@ public class SimAI : MonoBehaviour {
             {
                 //set targetPos to frigdePos; must compare position to each fridgePos to find closest fridge 
                 isIdle = false;
+                isUsingWidgetBench = false;
+                needToHaul = false;
                 isGettingFood = true;
           
                 GetTargetPosFridge();
@@ -104,8 +112,10 @@ public class SimAI : MonoBehaviour {
             
         }
 
-        //IF NEEDS ARE MET THEN WORK ON HIGHEST PRIORITY TASK POSSIBLE
+        //IF NEEDS ARE MET THEN WORK ON HIGHEST PRIORITY TASK POSSIBLE (refactor this)
         if (simStatsScript.hunger >= 40 && simStatsScript.energy >= 30)
+
+            //WidgetBenchAvailable();
         {
             if (simStatsScript.canLabor)
             {
@@ -115,18 +125,31 @@ public class SimAI : MonoBehaviour {
                 }
                 if (GameStats.hasWidgetBench && !needToHaul)
                 {
-                    isIdle = false;
-                    isUsingWidgetBench = true;
+                    //if widget bench is available
+                    if (IsWidgetBenchAvailable())
+                    {
+                        isIdle = false;
+                        isUsingWidgetBench = true;
 
-                    GetTargetPosWidgetBench();
-                    GoToward(targetPos);
+                        GetTargetPosWidgetBench();
+                        GoToward(targetPos);
+                    }
+                    
                 }
             }
         }
-        
-      
 
+        else
+        {
+            isIdle = true;
+        }
+
+        if (!isUsingWidgetBench)
+        {
+            isWidgetBenchInProgress = false;
+        }
     }
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
     //NEED METERS DEPLETE PERIODICALLY
@@ -247,12 +270,41 @@ public class SimAI : MonoBehaviour {
         }
     }
 
+    public bool IsWidgetBenchAvailable()
+    {
+        SimAI otherSimAIScript;
+        int beingUsed = -1;
+
+        if (GameStats.countWidgetBench >= 0)
+        {
+            foreach(GameObject otherSimObj in otherSimArray)
+            {
+                if (otherSimObj != gameObject)
+                {
+                    otherSimAIScript = otherSimObj.GetComponent<SimAI>();
+                    if (otherSimAIScript.isUsingWidgetBench || otherSimAIScript.needToHaul)
+                    {
+                        beingUsed++;
+                    }
+                }
+            }
+        }
+        if (beingUsed < GameStats.countWidgetBench)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 
     //COLLISION LOGIC ---------------------------------------------------------------------
     void OnCollisionStay2D(Collision2D col)
     {
         //FRIDGE ADDS 60 TO HUNGER
-        if (col.gameObject.tag == "fridge")
+        if (col.gameObject.tag == "Fridge")
         {
             if (isGettingFood)
             {
@@ -265,7 +317,7 @@ public class SimAI : MonoBehaviour {
 
                 //TASK COMPLETE
                 isGettingFood = false;
-                isIdle = true;
+                //isIdle = true;
             }
         }
 

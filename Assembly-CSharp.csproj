@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraScript.cs" />
+     <Compile Include="Assets\Scripts\GUI\WidgetBenchPlacement.cs" />
      <Compile Include="Assets\Scripts\GameManager\GameStats.cs" />
      <Compile Include="Assets\Scripts\GameManager\Inputs.cs" />
      <Compile Include="Assets\Scripts\GameManager\MainGUI.cs" />

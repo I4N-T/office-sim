@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SimManager : MonoBehaviour {
 
@@ -8,6 +9,8 @@ public class SimManager : MonoBehaviour {
     public SimStats simStatsScript;
     public SimAI simAIScript;
 
+    //ARRAY TO HOLD ALL OTHER SIMS SO THEIR UI CAN BE DISABLED WHEN THIS ONE IS ENABLED
+    public GameObject[] otherSimArray;
 
     //GUI STUFF
     GameObject canvasObj;
@@ -28,7 +31,9 @@ public class SimManager : MonoBehaviour {
     GameObject simItemTextObj;
     public Text simItemText;
 
-    public bool isSimSelected = false;
+    public bool isSimSelected;
+
+    bool hasRun;
     //public static bool isSimNotSelected = true;
 
     int hungerHere;
@@ -39,6 +44,9 @@ public class SimManager : MonoBehaviour {
         //GET SCRIPT COMPONENTS
         simStatsScript = gameObject.GetComponent<SimStats>();
         simAIScript = gameObject.GetComponent<SimAI>();
+
+        //GET OTHER SIM OBJECTS ARRAY
+        otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
 
         //GET CANVAS OBJECT
         canvasObj = transform.GetChild(0).gameObject;
@@ -84,18 +92,25 @@ public class SimManager : MonoBehaviour {
         simHungerText.enabled = false;
         //simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
 
-        simItemText.enabled = false;
-        
+        simItemText.enabled = false;      
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        //if Sim is selected then simNameText.text = SimStats(instance of the selected sim).simName
+        //if Sim is selected then enable text and disable other sims' text
         if (isSimSelected == true)
         {
+            //disable other sims' text
+            if (!hasRun)
+            {
+                DisableOtherSimText();
+                hasRun = true;
+            }
             
+
+            //update and display this sim's text
             StatsTextUpdate();
 
             simNameText.enabled = true;
@@ -161,6 +176,30 @@ public class SimManager : MonoBehaviour {
         else if (!simAIScript.isHolding)
         {
             simItemText.text = "Item: ";
+        }
+    }
+
+    void DisableOtherSimText()
+    {
+        foreach (GameObject otherSimObj in otherSimArray)
+        {
+            //if the obj refers to any sim other than this one
+            if (otherSimObj != gameObject)
+            {
+
+                //disable all text
+                SimManager otherSimManagerScript = otherSimObj.GetComponent<SimManager>();
+
+                otherSimManagerScript.hasRun = false;
+                otherSimManagerScript.isSimSelected = false;
+                print(otherSimManagerScript.name);
+
+               /* otherSimManagerScript.simNameText.enabled = false;
+                otherSimManagerScript.simEnergyText.enabled = false;
+                otherSimManagerScript.simHungerText.enabled = false;
+                otherSimManagerScript.simStatusText.enabled = false;
+                otherSimManagerScript.simItemText.enabled = false;*/
+            }
         }
     }
 
