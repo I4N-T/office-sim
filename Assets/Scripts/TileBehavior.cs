@@ -33,6 +33,11 @@ public class TileBehavior : MonoBehaviour {
             rend.sprite = highlightSpriteArray[1];
             rend.sortingOrder = 1;
         }
+        else if (Inputs.placingFridge == true)
+        {
+            rend.sprite = highlightSpriteArray[2];
+            rend.sortingOrder = 1;
+        }
 
         else
         {

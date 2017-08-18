@@ -22,7 +22,11 @@ public class WidgetBenchScript : MonoBehaviour {
     bool isProgressCoroutineStarted;
     Coroutine progressCoroutine = null;
 
+    //USE TO DETERMINE IF needToHaul A WIDGET
     public bool hasWidgetOnIt;
+
+    //USE TO DETERMINE IF BENCH IS ALREADY IN USE
+    //public bool isOccupied;
    
 
     void Start()

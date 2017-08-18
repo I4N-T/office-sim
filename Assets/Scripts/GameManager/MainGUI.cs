@@ -12,8 +12,13 @@ public class MainGUI : MonoBehaviour {
     public GameObject buildBtnObj;
     public Button buildBtn;
 
+    //needs
     public GameObject needsBtnObj;
     public Button needsBtn;
+    public GameObject needsPanelObj;
+
+    public GameObject fridgeBtnObj;
+    public Button fridgeBtn;
 
     //production
     public GameObject productionBtnObj;
@@ -33,10 +38,12 @@ public class MainGUI : MonoBehaviour {
     {
         //BUTTON LISTENERS
         buildBtn.onClick.AddListener(BuildBtnAction);
+        needsBtn.onClick.AddListener(NeedsBtnAction);
         productionBtn.onClick.AddListener(ProductionBtnAction);
         //widgetBenchBtn.onClick.AddListener(WidgetBenchBtnAction);
 
         needsBtnObj.SetActive(false);
+        needsPanelObj.SetActive(false);
 
         productionBtnObj.SetActive(false);
         productionPanelObj.SetActive(false);
@@ -65,15 +72,57 @@ public class MainGUI : MonoBehaviour {
 
     void BuildBtnAction()
     {
-        needsBtnObj.SetActive(true);
-        productionBtnObj.SetActive(true);
-        salesBtnObj.SetActive(true);
+        if (!needsBtnObj.activeSelf && !productionBtnObj.activeSelf && !salesBtnObj.activeSelf)
+        {
+            print("big ol'");
+            needsBtnObj.SetActive(true);
+            productionBtnObj.SetActive(true);
+            salesBtnObj.SetActive(true);
+        }
+        else if (needsBtnObj.activeSelf && productionBtnObj.activeSelf && salesBtnObj.activeSelf)
+        {
+
+            print("cockneyed");
+            needsBtnObj.SetActive(false);
+            productionBtnObj.SetActive(false);
+            salesBtnObj.SetActive(false);
+
+            needsPanelObj.SetActive(false);
+            productionPanelObj.SetActive(false);
+        }         
+    }
+
+    void NeedsBtnAction()
+    {
+        if (!needsPanelObj.activeSelf)
+        {
+            needsPanelObj.SetActive(true);
+
+            productionPanelObj.SetActive(false);
+        }
+        else if (needsPanelObj.activeSelf)
+        {
+            needsPanelObj.SetActive(false);
+            
+        }
+        
     }
 
     void ProductionBtnAction()
     {
-        productionPanelObj.SetActive(true);
+        if (!productionPanelObj.activeSelf)
+        {
+            productionPanelObj.SetActive(true);
+
+            needsPanelObj.SetActive(false);
+        }
+        else if (productionPanelObj.activeSelf)
+        {
+            productionPanelObj.SetActive(false);
+            
+        }
     }
+
 
     
 }

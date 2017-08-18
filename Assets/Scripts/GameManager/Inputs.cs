@@ -11,15 +11,18 @@ public class Inputs : MonoBehaviour {
 
 
     //RECTTRANSFORMS FOR KEEPING MOUSE CLICK FROM GOING THROUGH BUTTONS; USEFUL FOR OBJECT PLACEMENT
+    public RectTransform needsPanelRect;
     public RectTransform productionPanelRect;
     public GameObject buttonCanv;
 
     //bools
     public static bool placingWidgetBench = false;
+    public static bool placingFridge = false;
     //bool isMouseOverUI;
 
     //BUILD STRUCTURES OBJECTS
     public GameObject widgetBenchObject;
+    public GameObject fridgeObject;
 
 
 	// Use this for initialization
@@ -40,6 +43,7 @@ public class Inputs : MonoBehaviour {
         if (Input.GetMouseButtonUp(1))
         {
             placingWidgetBench = false;
+            placingFridge = false;
             //placingwhatever = false;
         }
 
@@ -54,6 +58,7 @@ public class Inputs : MonoBehaviour {
         }
  
         //PURCHASE AND BUILD WITH LEFT CLICK
+        //widget bench
         if (placingWidgetBench == true && IsMouseOverUI() == false)
         {
 
@@ -63,6 +68,17 @@ public class Inputs : MonoBehaviour {
                 Instantiate(widgetBenchObject, mousePosition, Quaternion.identity);
                 placingWidgetBench = false;
                
+            }
+        }
+
+        //fridge
+        if (placingFridge == true && IsMouseOverUI() == false)
+        {
+            if (Input.GetMouseButtonUp(0) && GUIUtility.hotControl == 0)
+            {
+                GameStats.dollars -= 300;
+                Instantiate(fridgeObject, mousePosition, Quaternion.identity);
+                placingFridge = false;
             }
         }
 	}
@@ -77,7 +93,7 @@ public class Inputs : MonoBehaviour {
 
     bool IsMouseOverUI()
     {
-        if (RectTransformUtility.RectangleContainsScreenPoint(productionPanelRect, Input.mousePosition))
+        if (RectTransformUtility.RectangleContainsScreenPoint(productionPanelRect, Input.mousePosition) || RectTransformUtility.RectangleContainsScreenPoint(needsPanelRect, Input.mousePosition))
         {
             return true;
         }

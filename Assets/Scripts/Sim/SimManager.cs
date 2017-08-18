@@ -33,10 +33,7 @@ public class SimManager : MonoBehaviour {
 
     public bool isSimSelected;
 
-    bool hasRun;
-    //public static bool isSimNotSelected = true;
-
-    int hungerHere;
+    bool hasRunDisable;
 
     // Use this for initialization
     void Start () {
@@ -45,8 +42,19 @@ public class SimManager : MonoBehaviour {
         simStatsScript = gameObject.GetComponent<SimStats>();
         simAIScript = gameObject.GetComponent<SimAI>();
 
+        //ADD THIS SIM TO THE SIMLIST
+        GameStats.simList.Add(gameObject);
+
+        //to test the sim list
+        foreach (GameObject sim in GameStats.simList)
+        {
+            SimStats theScript = sim.GetComponent<SimStats>();
+            //print("simList: " + theScript.simName);
+        }
+        
+
         //GET OTHER SIM OBJECTS ARRAY
-        otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
+        //otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
 
         //GET CANVAS OBJECT
         canvasObj = transform.GetChild(0).gameObject;
@@ -103,10 +111,10 @@ public class SimManager : MonoBehaviour {
         if (isSimSelected == true)
         {
             //disable other sims' text
-            if (!hasRun)
+            if (!hasRunDisable)
             {
                 DisableOtherSimText();
-                hasRun = true;
+                hasRunDisable = true;
             }
             
 
@@ -158,7 +166,7 @@ public class SimManager : MonoBehaviour {
             }
             if (simAIScript.isUsingWidgetBench)
             {
-                simStatusText.text = "using widget bench";
+                simStatusText.text = "using " + simStatsScript.objectInUse;
             }
             if (simAIScript.needToHaul)
             {
@@ -181,7 +189,7 @@ public class SimManager : MonoBehaviour {
 
     void DisableOtherSimText()
     {
-        foreach (GameObject otherSimObj in otherSimArray)
+        foreach (GameObject otherSimObj in GameStats.simList)
         {
             //if the obj refers to any sim other than this one
             if (otherSimObj != gameObject)
@@ -190,15 +198,10 @@ public class SimManager : MonoBehaviour {
                 //disable all text
                 SimManager otherSimManagerScript = otherSimObj.GetComponent<SimManager>();
 
-                otherSimManagerScript.hasRun = false;
+                otherSimManagerScript.hasRunDisable = false;
                 otherSimManagerScript.isSimSelected = false;
-                print(otherSimManagerScript.name);
+                //print(otherSimManagerScript.name);
 
-               /* otherSimManagerScript.simNameText.enabled = false;
-                otherSimManagerScript.simEnergyText.enabled = false;
-                otherSimManagerScript.simHungerText.enabled = false;
-                otherSimManagerScript.simStatusText.enabled = false;
-                otherSimManagerScript.simItemText.enabled = false;*/
             }
         }
     }
@@ -206,7 +209,7 @@ public class SimManager : MonoBehaviour {
 
     void OnMouseDown()
     {
-        print("dickeradoogle");
+        //print("dickeradoogle");
         isSimSelected = true;
     }
 

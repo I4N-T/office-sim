@@ -19,6 +19,9 @@ public class GameStats : MonoBehaviour {
     public static List<GameObject> fridgeList = new List<GameObject>();
     public static List<GameObject> widgetBenchList = new List<GameObject>();
 
+    //SIM LIST - it's a list of all sims, what they are doing, and which object they are using
+    public static List<GameObject> simList = new List<GameObject>();
+
     void Awake()
     {
         countFridge = -1;
@@ -38,14 +41,14 @@ public class GameStats : MonoBehaviour {
 	
     void Update()
     {
-        print(countFridge);
+        //print(countFridge);
         for (var i = fridgeList.Count - 1; i > -1; i--)
         {
             if (fridgeList[i] == null)
                 fridgeList.RemoveAt(i);
         }
 
-        print(countWidgetBench);
+        //print(countWidgetBench);
         for (var i = widgetBenchList.Count - 1; i > -1; i--)
         {
             if (widgetBenchList[i] == null)

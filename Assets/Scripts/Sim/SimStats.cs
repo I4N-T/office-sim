@@ -57,4 +57,7 @@ public class SimStats : MonoBehaviour {
     //INVENTORY
     public GameObject itemInPossession;
 
+    //CURRENT STATUS
+    public GameObject objectInUse;
+
 }

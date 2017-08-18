@@ -41,6 +41,8 @@ public class SimAI : MonoBehaviour {
 
     //SimManager simManagerScript;
 
+    public int objID;
+
 
     void Start () {
 
@@ -51,6 +53,8 @@ public class SimAI : MonoBehaviour {
 
         //GET OTHER SIM OBJECTS ARRAY
         otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
+        
+        
 
         rb2D = GetComponent<Rigidbody2D>();
         timeLeft = 2f;
@@ -105,7 +109,7 @@ public class SimAI : MonoBehaviour {
                 isUsingWidgetBench = false;
                 needToHaul = false;
                 isGettingFood = true;
-          
+    
                 GetTargetPosFridge();
                 GoToward(targetPos);
             }
@@ -113,7 +117,7 @@ public class SimAI : MonoBehaviour {
         }
 
         //IF NEEDS ARE MET THEN WORK ON HIGHEST PRIORITY TASK POSSIBLE (refactor this)
-        if (simStatsScript.hunger >= 40 && simStatsScript.energy >= 30)
+        else if (simStatsScript.hunger >= 40 && simStatsScript.energy >= 30)
 
             //WidgetBenchAvailable();
         {
@@ -123,7 +127,7 @@ public class SimAI : MonoBehaviour {
                 {
                     HaulWidget();
                 }
-                if (GameStats.hasWidgetBench && !needToHaul)
+                else if (GameStats.hasWidgetBench && !needToHaul)
                 {
                     //if widget bench is available
                     if (IsWidgetBenchAvailable())
@@ -136,18 +140,32 @@ public class SimAI : MonoBehaviour {
                     }
                     
                 }
+                else if (!GameStats.hasWidgetBench)
+                {
+                    isIdle = true;
+                }
             }
         }
 
-        else
+        else 
         {
             isIdle = true;
         }
 
         if (!isUsingWidgetBench)
         {
+
             isWidgetBenchInProgress = false;
+
+            if (!isWidgetBenchInProgress && !needToHaul)
+            {
+                print("it ran " + simStatsScript.simName);
+                simStatsScript.objectInUse = null;
+            }
         }
+
+       
+
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -205,6 +223,40 @@ public class SimAI : MonoBehaviour {
         }
     }
     
+    /*public void GetTargetPosWidgetBench()
+    {
+        GameObject[] widgetBenches = GameObject.FindGameObjectsWithTag("WidgetBench");
+        WidgetBenchScript widgetBenchScript;
+        //Vector2 simPos = gameObject.transform.position;
+        Vector2 testPos = new Vector2(0, 0);
+        float mag1 = 0;
+        float mag2 = 9999;
+
+        //for each wb in wbarray, compare positions to determine which is closest
+        foreach (GameObject widgetBench in widgetBenches)
+        {
+            widgetBenchScript = widgetBench.GetComponent<WidgetBenchScript>();
+
+            foreach (GameObject sim in GameStats.simList)
+            {
+                SimStats localScript = sim.GetComponent<SimStats>();
+                if (localScript.objectInUse.GetInstanceID() == widgetBench.GetInstanceID())
+                {
+                    //remove bench from list
+                }
+            }
+
+            mag1 = Vector2.Distance(simStatsScript.simPos, widgetBenchScript.widgetBenchPos);
+            if (mag1 < mag2)
+            {
+                mag2 = mag1;
+                targetPos = widgetBenchScript.widgetBenchUsePos;
+            }
+
+        }
+    }
+
+    public void */
 
     public void GetTargetPosWidgetBench()
     {
@@ -218,14 +270,52 @@ public class SimAI : MonoBehaviour {
         foreach (GameObject widgetBench in GameStats.widgetBenchList)
         {
             widgetBenchScript = widgetBench.GetComponent<WidgetBenchScript>();
-            mag1 = Vector2.Distance(simStatsScript.simPos, widgetBenchScript.widgetBenchPos);
-            if (mag1 < mag2)
+
+            //if this sim is using this bench already, set target so he stays
+            if (objID == widgetBenchScript.gameObject.GetInstanceID())
             {
-                mag2 = mag1;
+                //print("1" + simStatsScript.simName + " is going to " + widgetBenchScript.gameObject.GetInstanceID());
                 targetPos = widgetBenchScript.widgetBenchUsePos;
+                return; 
             }
+
+            else if (objID != widgetBenchScript.gameObject.GetInstanceID() /*simStatsScript.objectInUse == null || simStatsScript.objectInUse != widgetBenchScript.gameObject*/)
+            {
+
+                //if sim is already at a bench, don't do this next part
+                if (!isWidgetBenchInProgress && !needToHaul && simStatsScript.objectInUse == null)
+                {
+                    //For any widget bench that is not being used, find bench at closest distance 
+                    if (!widgetBenchScript.inProgress)
+                    {
+                        mag1 = Vector2.Distance(simStatsScript.simPos, widgetBenchScript.widgetBenchPos);
+                        if (mag1 < mag2)
+                        {
+                            mag2 = mag1;
+                            targetPos = widgetBenchScript.widgetBenchUsePos;
+                            //print("2" + simStatsScript.simName + " is going to " + widgetBenchScript.gameObject.GetInstanceID());
+                        }
+
+                    }
+                }
+            } 
+            
         }
     }
+
+    /*public void GetObjectInUse()
+    {
+        WidgetBenchScript widgetBenchScript;
+
+        foreach (GameObject widgetBench in GameStats.widgetBenchList)
+        {
+            widgetBenchScript = widgetBench.GetComponent<WidgetBenchScript>();
+            if (targetPos == widgetBenchScript.widgetBenchPos)
+            {
+                simStatsScript.objectInUse = widgetBench;
+            }
+        }
+    }*/
 
     public void GetTargetPosHaulDropoff()
     {
@@ -341,6 +431,11 @@ public class SimAI : MonoBehaviour {
             {
                 //set inProgress to true
                 isWidgetBenchInProgress = true;
+
+                //set the col.parent to be the object in use for this sim
+                simStatsScript.objectInUse = col.transform.parent.gameObject;
+                //consider changing the method from using objID to just using the gameobject itself
+                objID = simStatsScript.objectInUse.GetInstanceID();
             }
         }
     }

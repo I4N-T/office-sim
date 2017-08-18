@@ -16,6 +16,7 @@ public class WidgetBenchChildScript : MonoBehaviour {
         if (col.gameObject.tag == "Sim")
         {
             widgetBenchScript.simAIScript = col.gameObject.GetComponent<SimAI>();
+            //widgetBenchScript.isOccupied = true;
             //inProgress = true;
         }
     }
