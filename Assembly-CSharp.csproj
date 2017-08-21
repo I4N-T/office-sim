@@ -47,6 +47,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraScript.cs" />
      <Compile Include="Assets\Scripts\GUI\FridgePlacementScript.cs" />
+     <Compile Include="Assets\Scripts\GUI\StockpilePlacementScript.cs" />
      <Compile Include="Assets\Scripts\GUI\WidgetBenchPlacement.cs" />
      <Compile Include="Assets\Scripts\GameManager\GameStats.cs" />
      <Compile Include="Assets\Scripts\GameManager\Inputs.cs" />
@@ -63,6 +64,7 @@
      <Compile Include="Assets\Scripts\TestObjectPlaceCursor.cs" />
      <Compile Include="Assets\Scripts\TileBehavior.cs" />
      <Compile Include="Assets\Scripts\TileMeshScript.cs" />
+     <Compile Include="Assets\Scripts\ZoneBehavior.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

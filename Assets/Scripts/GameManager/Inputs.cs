@@ -15,23 +15,62 @@ public class Inputs : MonoBehaviour {
     public RectTransform productionPanelRect;
     public GameObject buttonCanv;
 
-    //bools
+    //bools for placement
     public static bool placingWidgetBench = false;
     public static bool placingFridge = false;
     //bool isMouseOverUI;
+
+    //BOOLS FOR ZONE DRAWING
+    public static bool drawingZoneStockpile;
+
+    //RECT FOR ZONE DRAWING
+    public Rect zoneRect;
+    public static bool firstCornerDone;
+
+    public GameObject stockpileZoneObj;
+    SpriteRenderer stockpileZoneObjRend;
+    RectTransform stockpileZoneObjRectTrans;
 
     //BUILD STRUCTURES OBJECTS
     public GameObject widgetBenchObject;
     public GameObject fridgeObject;
 
+    //THIS IS NEEDED (only once) BECAUSE ONE ZONE OBJECT IS REQUIRED TO MAKE THE ZONEBEHAVIOR SCRIPT RUN SO THIS ALL WORKS
+    public bool hasBeenInstantiated;
+
 
 	// Use this for initialization
 	void Start () {
-	
+    
+       
+
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () {     
+        
+        if (Input.GetKeyUp(KeyCode.Z))
+        {
+            if (!drawingZoneStockpile)
+            {
+                drawingZoneStockpile = true;
+            }
+            else if (drawingZoneStockpile)
+            {
+                drawingZoneStockpile = false;
+            }
+        }
+
+        if (!hasBeenInstantiated)
+        {
+            if (drawingZoneStockpile)
+            {
+                //Instantiate(stockpileZoneObj, new Vector3(0, 0, 0), Quaternion.identity);
+                hasBeenInstantiated = true;
+            }
+        }
+        
+
 
         //UPDATE ISMOUSEOVERUI
         IsMouseOverUI();
@@ -39,12 +78,22 @@ public class Inputs : MonoBehaviour {
             //CONSTANTLY UPDATE MOUSEPOSITION; try using instance of mouseposition script as argument to this method
             MousePositionGet();
 
+        if (drawingZoneStockpile == true)
+        {
+            if (firstCornerDone)
+            {
+                zoneRect.max = mousePosition;
+            }
+        }
+
         //CANCEL PLACEMENT IF RIGHT CLICK
         if (Input.GetMouseButtonUp(1))
         {
             placingWidgetBench = false;
             placingFridge = false;
             //placingwhatever = false;
+
+            drawingZoneStockpile = false;
         }
 
         //TOGGLE BUILD WIDGET BENCH
@@ -81,6 +130,30 @@ public class Inputs : MonoBehaviour {
                 placingFridge = false;
             }
         }
+
+        //STOCKPILE ZONE
+        if (drawingZoneStockpile == true && IsMouseOverUI() == false)
+        {
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (!firstCornerDone)
+                {
+                    //zoneRectCornerStart = mousePosition;
+                    zoneRect.min = mousePosition;
+                    GameObject stockpileZoneNew = Instantiate(stockpileZoneObj, zoneRect.min, Quaternion.identity) as GameObject;
+                    GameStats.stockpileZoneList.Add(stockpileZoneNew);
+                    firstCornerDone = true;   
+                }
+                else if (firstCornerDone)
+                {
+                    zoneRect.max = mousePosition;
+ 
+                    firstCornerDone = false;
+                    drawingZoneStockpile = false;
+                }
+                
+            }
+        }
 	}
 
 
@@ -88,7 +161,7 @@ public class Inputs : MonoBehaviour {
     {
         float mousex = Mathf.Round(MousePosition.mouseposition.x);
         float mousey = Mathf.Round(MousePosition.mouseposition.y);
-        mousePosition = new Vector3(mousex, mousey, 1);
+        mousePosition = new Vector3(mousex, mousey, 1);  
     }
 
     bool IsMouseOverUI()

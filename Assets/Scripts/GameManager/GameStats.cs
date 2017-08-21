@@ -15,6 +15,10 @@ public class GameStats : MonoBehaviour {
     public static bool hasWidgetBench;
     public static int countWidgetBench;
 
+    //ZONE BOOLEANS and COUNTS
+    public static bool hasStockpileZone;
+    public static int countStockpileZone;
+
     //ITEM/STRUCTURE ARRAYS -- used, for example, to get item position in the SimAI script
     public static List<GameObject> fridgeList = new List<GameObject>();
     public static List<GameObject> widgetBenchList = new List<GameObject>();
@@ -22,10 +26,14 @@ public class GameStats : MonoBehaviour {
     //SIM LIST - it's a list of all sims, what they are doing, and which object they are using
     public static List<GameObject> simList = new List<GameObject>();
 
+    //STOCKPILE ZONE LIST
+    public static List<GameObject> stockpileZoneList = new List<GameObject>();
+
     void Awake()
     {
         countFridge = -1;
         countWidgetBench = -1;
+        countStockpileZone = -1;
     }
 
 	// Use this for initialization
@@ -36,12 +44,13 @@ public class GameStats : MonoBehaviour {
 
         hasFridge = false;
         hasWidgetBench = false;
+        hasStockpileZone = false;
 	    
 	}
 	
     void Update()
     {
-        //print(countFridge);
+        
         for (var i = fridgeList.Count - 1; i > -1; i--)
         {
             if (fridgeList[i] == null)
@@ -53,6 +62,12 @@ public class GameStats : MonoBehaviour {
         {
             if (widgetBenchList[i] == null)
                 widgetBenchList.RemoveAt(i);
+        }
+
+        for (var i = stockpileZoneList.Count - 1; i > -1; i--)
+        {
+            if (stockpileZoneList[i] == null)
+                stockpileZoneList.RemoveAt(i);
         }
 
     }

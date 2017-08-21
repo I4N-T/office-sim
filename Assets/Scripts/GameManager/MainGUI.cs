@@ -32,15 +32,24 @@ public class MainGUI : MonoBehaviour {
     public Button salesBtn;
 
     //ZONE
+    public GameObject zoneBtnObj;
     public Button zoneBtn;
+
+    //stockpile
+    public GameObject stockpileBtnObj;
+    public Button stockpileBtn;
 
     void Awake()
     {
         //BUTTON LISTENERS
         buildBtn.onClick.AddListener(BuildBtnAction);
+
         needsBtn.onClick.AddListener(NeedsBtnAction);
         productionBtn.onClick.AddListener(ProductionBtnAction);
         //widgetBenchBtn.onClick.AddListener(WidgetBenchBtnAction);
+
+        zoneBtn.onClick.AddListener(ZoneBtnAction);
+        //stockpileBtn.onClick.AddListener(StockpileBtnAction);
 
         needsBtnObj.SetActive(false);
         needsPanelObj.SetActive(false);
@@ -49,6 +58,8 @@ public class MainGUI : MonoBehaviour {
         productionPanelObj.SetActive(false);
 
         salesBtnObj.SetActive(false);
+
+        stockpileBtnObj.SetActive(false);
 
     }
 
@@ -74,15 +85,14 @@ public class MainGUI : MonoBehaviour {
     {
         if (!needsBtnObj.activeSelf && !productionBtnObj.activeSelf && !salesBtnObj.activeSelf)
         {
-            print("big ol'");
             needsBtnObj.SetActive(true);
             productionBtnObj.SetActive(true);
             salesBtnObj.SetActive(true);
+
+            stockpileBtnObj.SetActive(false);
         }
         else if (needsBtnObj.activeSelf && productionBtnObj.activeSelf && salesBtnObj.activeSelf)
         {
-
-            print("cockneyed");
             needsBtnObj.SetActive(false);
             productionBtnObj.SetActive(false);
             salesBtnObj.SetActive(false);
@@ -123,6 +133,24 @@ public class MainGUI : MonoBehaviour {
         }
     }
 
+    void ZoneBtnAction()
+    {
+        if (!stockpileBtnObj.activeSelf)
+        {
+            stockpileBtnObj.SetActive(true);
 
-    
+            needsBtnObj.SetActive(false);
+            productionBtnObj.SetActive(false);
+            salesBtnObj.SetActive(false);
+            needsPanelObj.SetActive(false);
+            productionPanelObj.SetActive(false);
+        }
+        else if (stockpileBtnObj.activeSelf)
+        {
+            stockpileBtnObj.SetActive(false);    
+        }
+    }
+
+
+
 }

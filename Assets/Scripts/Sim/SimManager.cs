@@ -200,7 +200,7 @@ public class SimManager : MonoBehaviour {
 
                 otherSimManagerScript.hasRunDisable = false;
                 otherSimManagerScript.isSimSelected = false;
-                //print(otherSimManagerScript.name);
+                
 
             }
         }
@@ -209,7 +209,6 @@ public class SimManager : MonoBehaviour {
 
     void OnMouseDown()
     {
-        //print("dickeradoogle");
         isSimSelected = true;
     }
 

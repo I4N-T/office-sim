@@ -73,6 +73,8 @@ public class SimAI : MonoBehaviour {
     //UPDATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void FixedUpdate()
     {
+
+        print(simStatsScript.simName + " is using widget bench: " + isUsingWidgetBench);
         //UPDATE simPos
         simStatsScript.simPos = gameObject.transform.position;
 
@@ -126,6 +128,8 @@ public class SimAI : MonoBehaviour {
                 if (GameStats.hasWidgetBench && needToHaul)
                 {
                     HaulWidget();
+                    //this next line is needed to prevent another sim from going isUsingWidgetBench = true while this sim changes it's needtohaul bool
+                    isUsingWidgetBench = true;
                 }
                 else if (GameStats.hasWidgetBench && !needToHaul)
                 {
@@ -138,6 +142,10 @@ public class SimAI : MonoBehaviour {
                         GetTargetPosWidgetBench();
                         GoToward(targetPos);
                     }
+                    else if (!IsWidgetBenchAvailable())
+                    {
+                        isIdle = true;
+                    }
                     
                 }
                 else if (!GameStats.hasWidgetBench)
@@ -145,6 +153,7 @@ public class SimAI : MonoBehaviour {
                     isIdle = true;
                 }
             }
+           
         }
 
         else 
@@ -159,7 +168,7 @@ public class SimAI : MonoBehaviour {
 
             if (!isWidgetBenchInProgress && !needToHaul)
             {
-                print("it ran " + simStatsScript.simName);
+                //print("it ran " + simStatsScript.simName);
                 simStatsScript.objectInUse = null;
             }
         }
@@ -357,6 +366,7 @@ public class SimAI : MonoBehaviour {
             needToHaul = false;
             simStatsScript.itemInPossession = null;
             isHolding = false;
+            //isUsingWidgetBench = true;
         }
     }
 

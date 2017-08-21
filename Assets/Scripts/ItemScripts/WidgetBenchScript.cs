@@ -35,7 +35,7 @@ public class WidgetBenchScript : MonoBehaviour {
         GameStats.hasWidgetBench = true;
         widgetBenchPos = gameObject.transform.position;
 
-        //ADD THIS ITEM TO THE FRIDGE ARRAY IN GAMESTATS
+        //ADD THIS ITEM TO THE WIDGETBENCH ARRAY IN GAMESTATS
         GameStats.countWidgetBench++;
         GameStats.widgetBenchList.Add(this.gameObject);
 
