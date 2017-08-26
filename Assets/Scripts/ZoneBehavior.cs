@@ -33,6 +33,7 @@ public class ZoneBehavior : MonoBehaviour {
     {
 
         DrawZoneOnPlacement();
+        
 
 
     }
@@ -47,15 +48,30 @@ public class ZoneBehavior : MonoBehaviour {
             }
             else if (isBeingCreated)
             {
-                rectTrans.position = new Vector2((inputsScript.zoneRect.min.x - 0.5f) + (inputsScript.zoneRect.width / 2f), (inputsScript.zoneRect.min.y - 0.5f) + (inputsScript.zoneRect.height / 2f));
+                rectTrans.position = new Vector3((inputsScript.zoneRect.min.x - 0.5f) + (inputsScript.zoneRect.width / 2f), (inputsScript.zoneRect.min.y - 0.5f) + (inputsScript.zoneRect.height / 2f), -1);
                 rectTrans.localScale = inputsScript.zoneRect.size;
             }
         }
         else if (!Inputs.drawingZoneStockpile)
         {
             isBeingCreated = false;
+            GameStats.hasStockpileZone = true;
+      
         }
     }
+
+    //DELETE ZONE
+    void OnMouseDown()
+    {
+        //print("click happened");
+        if (DeleteScript.isDelete)
+        {
+            Destroy(gameObject);
+            DeleteScript.isDelete = false;
+        }
+    }
+
+   
 
 
 }

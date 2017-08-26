@@ -61,7 +61,7 @@ public class TileBehavior : MonoBehaviour {
         }   */
 
         //INSTANTIATE STOCKPILE ZONE OBJECT ON TOP OF TILES
-        if (Inputs.drawingZoneStockpile)
+        /*if (Inputs.drawingZoneStockpile)
         {
             if (inputsScript.zoneRect.Contains(gameObject.transform.position))
             {
@@ -81,7 +81,7 @@ public class TileBehavior : MonoBehaviour {
                 isStockpileZone = true;
                 //Instantiate(stockpileZoneObj, gameObject.transform.position, Quaternion.identity);
             }
-        }
+        }*/
 
 
 
@@ -122,6 +122,10 @@ public class TileBehavior : MonoBehaviour {
         {
             itemOnTile = col.gameObject;
         }
+        if (col.gameObject.tag == "StockpileZone")
+        {
+            isStockpileZone = true;
+        }
     }
 
     void OnTriggerExit2D(Collider2D col)
@@ -129,6 +133,10 @@ public class TileBehavior : MonoBehaviour {
         if (col.gameObject.tag != "Sim")
         {
             itemOnTile = null;
+        }
+        if (col.gameObject.tag == "StockpileZone")
+        {
+            isStockpileZone = false;
         }
     }
 }

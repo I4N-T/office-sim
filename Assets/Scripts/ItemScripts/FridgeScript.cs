@@ -22,4 +22,15 @@ public class FridgeScript : MonoBehaviour {
         fridgePos = gameObject.transform.position;
 
     }
+
+    //DELETE OBJECT
+    void OnMouseDown()
+    {
+        print("click happened");
+        if (DeleteScript.isDelete)
+        {
+            Destroy(gameObject);
+            DeleteScript.isDelete = false;
+        }
+    }
 }

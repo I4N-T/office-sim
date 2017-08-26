@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraScript.cs" />
+     <Compile Include="Assets\Scripts\GUI\DeleteScript.cs" />
      <Compile Include="Assets\Scripts\GUI\FridgePlacementScript.cs" />
      <Compile Include="Assets\Scripts\GUI\StockpilePlacementScript.cs" />
      <Compile Include="Assets\Scripts\GUI\WidgetBenchPlacement.cs" />
@@ -54,10 +55,17 @@
      <Compile Include="Assets\Scripts\GameManager\MainGUI.cs" />
      <Compile Include="Assets\Scripts\GameManager\MousePosition.cs" />
      <Compile Include="Assets\Scripts\GameManager\TileGenerator.cs" />
+     <Compile Include="Assets\Scripts\ItemScripts\Alternate\AltWidgetBenchChildScript.cs" />
+     <Compile Include="Assets\Scripts\ItemScripts\Alternate\AltWidgetBenchScript.cs" />
+     <Compile Include="Assets\Scripts\ItemScripts\Alternate\AltWidgetScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\FridgeScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\WidgetBenchChildScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\WidgetBenchScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\WidgetScript.cs" />
+     <Compile Include="Assets\Scripts\Sim\Alternate\AltSimAI.cs" />
+     <Compile Include="Assets\Scripts\Sim\Alternate\AltSimManager.cs" />
+     <Compile Include="Assets\Scripts\Sim\Alternate\NeedsControl.cs" />
+     <Compile Include="Assets\Scripts\Sim\Alternate\SimFSM.cs" />
      <Compile Include="Assets\Scripts\Sim\SimAI.cs" />
      <Compile Include="Assets\Scripts\Sim\SimManager.cs" />
      <Compile Include="Assets\Scripts\Sim\SimStats.cs" />

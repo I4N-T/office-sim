@@ -35,10 +35,6 @@ public class Inputs : MonoBehaviour {
     public GameObject widgetBenchObject;
     public GameObject fridgeObject;
 
-    //THIS IS NEEDED (only once) BECAUSE ONE ZONE OBJECT IS REQUIRED TO MAKE THE ZONEBEHAVIOR SCRIPT RUN SO THIS ALL WORKS
-    public bool hasBeenInstantiated;
-
-
 	// Use this for initialization
 	void Start () {
     
@@ -49,28 +45,6 @@ public class Inputs : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {     
         
-        if (Input.GetKeyUp(KeyCode.Z))
-        {
-            if (!drawingZoneStockpile)
-            {
-                drawingZoneStockpile = true;
-            }
-            else if (drawingZoneStockpile)
-            {
-                drawingZoneStockpile = false;
-            }
-        }
-
-        if (!hasBeenInstantiated)
-        {
-            if (drawingZoneStockpile)
-            {
-                //Instantiate(stockpileZoneObj, new Vector3(0, 0, 0), Quaternion.identity);
-                hasBeenInstantiated = true;
-            }
-        }
-        
-
 
         //UPDATE ISMOUSEOVERUI
         IsMouseOverUI();
@@ -138,6 +112,7 @@ public class Inputs : MonoBehaviour {
             {
                 if (!firstCornerDone)
                 {
+                    print("it ran");
                     //zoneRectCornerStart = mousePosition;
                     zoneRect.min = mousePosition;
                     GameObject stockpileZoneNew = Instantiate(stockpileZoneObj, zoneRect.min, Quaternion.identity) as GameObject;
@@ -146,7 +121,7 @@ public class Inputs : MonoBehaviour {
                 }
                 else if (firstCornerDone)
                 {
-                    zoneRect.max = mousePosition;
+                    //zoneRect.max = mousePosition;
  
                     firstCornerDone = false;
                     drawingZoneStockpile = false;
@@ -161,7 +136,7 @@ public class Inputs : MonoBehaviour {
     {
         float mousex = Mathf.Round(MousePosition.mouseposition.x);
         float mousey = Mathf.Round(MousePosition.mouseposition.y);
-        mousePosition = new Vector3(mousex, mousey, 1);  
+        mousePosition = new Vector3(mousex, mousey, -1);  
     }
 
     bool IsMouseOverUI()

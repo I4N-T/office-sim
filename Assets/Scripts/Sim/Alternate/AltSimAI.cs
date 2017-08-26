@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SimAI : MonoBehaviour {
+public class AltSimAI : MonoBehaviour {
 
     Rigidbody2D rb2D;
     float moveSpeed = 2f;
@@ -18,12 +18,12 @@ public class SimAI : MonoBehaviour {
 
     //ITEM STUFF
     //GENERAL
-    public bool isHolding;
+    //public bool isHolding;
 
     //FRIDGE 
 
     //WIDGET BENCH
-    public bool isUsingWidgetBench;
+    //public bool isUsingWidgetBench;
     public bool isWidgetBenchInProgress;
     public bool needToHaul;
 
@@ -33,37 +33,30 @@ public class SimAI : MonoBehaviour {
     //SIM STATS SCRIPT INSTANCE
     SimStats simStatsScript;
 
-    //ITEM SCRIPT INSTANCES
-    //WidgetBenchScript widgetBenchScript;
+    SimFSM simFSMScript;
 
-    //SimManager simManagerScript;
+
 
     public int objID;
 
 
-    void Start () {
+    void Start()
+    {
 
         isIdle = true;
 
+        simFSMScript = gameObject.GetComponent<SimFSM>();
         simStatsScript = gameObject.GetComponent<SimStats>();
         //simManagerScript = gameObject.GetComponent<SimManager>();
 
         //GET OTHER SIM OBJECTS ARRAY
         otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
-        
-        
+
+
 
         rb2D = GetComponent<Rigidbody2D>();
         timeLeft = 2f;
         moveVal = Random.Range(1, 9);
-
-        /*//GUI STUFF
-        guiScript.simNameText = */
-
-        //NEED DEPLETIONS
-        StartCoroutine(EnergyDeplete(5f));
-        StartCoroutine(HungerDeplete(3f));
-        
 
     }
 
@@ -73,26 +66,6 @@ public class SimAI : MonoBehaviour {
 
         //UPDATE simPos
         simStatsScript.simPos = gameObject.transform.position;
-
-        //SET isHolding BOOL
-        if (simStatsScript.itemInPossession != null)
-        {
-            isHolding = true;
-        }
-        else if (simStatsScript.itemInPossession == null)
-        {
-            isHolding = false;
-        }
-        
-
-        //if no task then IdleWander()
-        if (isIdle)
-        {
-            isUsingWidgetBench = false;
-            isGettingFood = false;
-            IdleWander();
-        }
-        
 
         //REPLENISH NEEDS IF POSSIBLE
 
@@ -104,66 +77,39 @@ public class SimAI : MonoBehaviour {
             //check for food
             if (GameStats.hasFridge == true)
             {
-                //set targetPos to frigdePos; must compare position to each fridgePos to find closest fridge 
-                isIdle = false;
-                isUsingWidgetBench = false;
-                needToHaul = false;
-                isGettingFood = true;
-    
-                GetTargetPosFridge();
-                GoToward(targetPos);
+                simFSMScript.mainState = SimFSM.MainFSM.Task;
+                simFSMScript.taskState = SimFSM.TaskFSM.GettingFood;
             }
             else if (!GameStats.hasFridge)
             {
                 //change this to set off notification that sim is starving
-                isGettingFood = false;
-                isIdle = true;
+                simFSMScript.mainState = SimFSM.MainFSM.Idle;
             }
-            
+
         }
 
         //IF NEEDS ARE MET THEN WORK ON HIGHEST PRIORITY TASK POSSIBLE (refactor this)
         else if (simStatsScript.hunger >= 40 && simStatsScript.energy >= 30)
-
-            //WidgetBenchAvailable();
         {
             if (simStatsScript.canLabor)
             {
-                if (GameStats.hasWidgetBench && needToHaul)
+                if (GameStats.hasWidgetBench)
                 {
-                    HaulWidget();
-                    //this next line is needed to prevent another sim from going isUsingWidgetBench = true while this sim changes it's needtohaul bool
-                    isUsingWidgetBench = true;
+                    simFSMScript.mainState = SimFSM.MainFSM.Task;
+                    simFSMScript.taskState = SimFSM.TaskFSM.MakingWidget;
                 }
-                else if (GameStats.hasWidgetBench && !needToHaul)
+                else if (!GameStats.hasWidgetBench)
                 {
-                    //if widget bench is available
-                    if (IsWidgetBenchAvailable())
-                    {
-                        isIdle = false;
-                        isUsingWidgetBench = true;
+                    simFSMScript.mainState = SimFSM.MainFSM.Idle;
+                }
 
-                        GetTargetPosWidgetBench();
-                        GoToward(targetPos);
-                    }
-                    else if (!IsWidgetBenchAvailable())
-                    {
-                        isIdle = true;
-                        //isUsingWidgetBench = false;
-                    }
-                    
-                }
-                
             }
-           
+
         }
 
-        else 
-        {
-            isIdle = true;
-        }
+       
 
-        if (!isUsingWidgetBench)
+        /*if (simFSMScript.mainState == SimFSM.MainFSM.Task && simFSMScript.taskState != SimFSM.TaskFSM.MakingWidget)
         {
 
             isWidgetBenchInProgress = false;
@@ -173,37 +119,14 @@ public class SimAI : MonoBehaviour {
                 //print("it ran " + simStatsScript.simName);
                 simStatsScript.objectInUse = null;
             }
-        }
+        }*/
 
-       
+
 
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-    //NEED METERS DEPLETE PERIODICALLY
-    IEnumerator EnergyDeplete(float waitTime)
-    {
-        for (;;)
-        {
-            simStatsScript.energy -= 1;
-            yield return new WaitForSeconds(waitTime);
-        }
-    }
-
-    IEnumerator HungerDeplete(float waitTime)
-    {
-        for (;;)
-        {
-            simStatsScript.hunger -= 1;
-
-            simStatsScript.hunger = Mathf.Clamp(simStatsScript.hunger, 0, 100);
-
-            //simManagerScript.simStatsScript.hunger -= 1;
-            yield return new WaitForSeconds(waitTime);
-        }
-    }
 
     //IF IN TRANSIT ----------------------------------------------------------------------------------------------------------------
     public void GoToward(Vector2 targetPos)
@@ -233,16 +156,17 @@ public class SimAI : MonoBehaviour {
                 {
                     mag2 = mag1;
                     targetPos = fridgeScript.fridgePos;
+                    simStatsScript.objectInUse = fridge;
                 }
             }
-            
-            
+
+
         }
     }
 
     public void GetTargetPosWidgetBench()
     {
-        WidgetBenchScript widgetBenchScript;
+        AltWidgetBenchScript widgetBenchScript;
         //Vector2 simPos = gameObject.transform.position;
         Vector2 testPos = new Vector2(0, 0);
         float mag1 = 0;
@@ -254,7 +178,7 @@ public class SimAI : MonoBehaviour {
             //Check if null
             if (widgetBench != null)
             {
-                widgetBenchScript = widgetBench.GetComponent<WidgetBenchScript>();
+                widgetBenchScript = widgetBench.GetComponent<AltWidgetBenchScript>();
                 //if this sim is using this bench already, set target so he stays
                 if (objID == widgetBenchScript.gameObject.GetInstanceID())
                 {
@@ -288,27 +212,13 @@ public class SimAI : MonoBehaviour {
         }
     }
 
-    /*public void GetObjectInUse()
-    {
-        WidgetBenchScript widgetBenchScript;
-
-        foreach (GameObject widgetBench in GameStats.widgetBenchList)
-        {
-            widgetBenchScript = widgetBench.GetComponent<WidgetBenchScript>();
-            if (targetPos == widgetBenchScript.widgetBenchPos)
-            {
-                simStatsScript.objectInUse = widgetBench;
-            }
-        }
-    }*/
-
     public void GetTargetPosHaulDropoff()
     {
         //if there is a zone, go to nearest empty tile in zone
 
         //else if no zone then drop next to bench
         //THIS IS JUST LIKE WidgetBenchTargetPos EXCEPT THE LINE THAT SETS THE TARGET POSITION
-        WidgetBenchScript widgetBenchScript;
+        AltWidgetBenchScript widgetBenchScript;
         Vector2 testPos = new Vector2(0, 0);
         float mag1 = 0;
         float mag2 = 9999;
@@ -316,7 +226,7 @@ public class SimAI : MonoBehaviour {
         //for each wb in wbList, compare positions to determine which is closest
         foreach (GameObject widgetBench in GameStats.widgetBenchList)
         {
-            widgetBenchScript = widgetBench.GetComponent<WidgetBenchScript>();
+            widgetBenchScript = widgetBench.GetComponent<AltWidgetBenchScript>();
             mag1 = Vector2.Distance(simStatsScript.simPos, widgetBenchScript.widgetBenchPos);
             if (mag1 < mag2)
             {
@@ -324,14 +234,14 @@ public class SimAI : MonoBehaviour {
                 targetPos = widgetBenchScript.widgetBenchPos;
             }
         }
-        
+
         targetPos = targetPos + new Vector2(2, 0);
     }
     //---------------------------------------------------------------------------------------------------------------------------
 
-        public void HaulWidget()
+    public void HaulWidget()
     {
-        isUsingWidgetBench = false;
+        //isUsingWidgetBench = false;
 
         GetTargetPosHaulDropoff();
         GoToward(targetPos);
@@ -341,24 +251,26 @@ public class SimAI : MonoBehaviour {
         {
             needToHaul = false;
             simStatsScript.itemInPossession = null;
-            isHolding = false;
+            //isHolding = false;
             //isUsingWidgetBench = true;
         }
     }
 
     public bool IsWidgetBenchAvailable()
     {
-        SimAI otherSimAIScript;
+        AltSimAI otherSimAIScript;
+        SimFSM otherSimFSMScript;
         int beingUsed = -1;
 
         if (GameStats.countWidgetBench >= 0)
         {
-            foreach(GameObject otherSimObj in otherSimArray)
+            foreach (GameObject otherSimObj in otherSimArray)
             {
                 if (otherSimObj != gameObject)
                 {
-                    otherSimAIScript = otherSimObj.GetComponent<SimAI>();
-                    if (otherSimAIScript.isUsingWidgetBench || otherSimAIScript.needToHaul)
+                    otherSimAIScript = otherSimObj.GetComponent<AltSimAI>();
+                    otherSimFSMScript = otherSimObj.GetComponent<SimFSM>();
+                    if ((otherSimFSMScript.mainState == SimFSM.MainFSM.Task && otherSimFSMScript.taskState == SimFSM.TaskFSM.MakingWidget) || otherSimAIScript.needToHaul)
                     {
                         beingUsed++;
                     }
@@ -382,7 +294,7 @@ public class SimAI : MonoBehaviour {
         //FRIDGE ADDS 60 TO HUNGER
         if (col.gameObject.tag == "Fridge")
         {
-            if (isGettingFood)
+            if (simFSMScript.mainState == SimFSM.MainFSM.Task && simFSMScript.taskState == SimFSM.TaskFSM.GettingFood)
             {
                 int hunger = simStatsScript.hunger;
                 hunger += 60;
@@ -392,8 +304,9 @@ public class SimAI : MonoBehaviour {
                 simStatsScript.hunger = hunger;
 
                 //TASK COMPLETE
-                isGettingFood = false;
-                //isIdle = true;
+                simStatsScript.objectInUse = null;
+                simFSMScript.taskState = SimFSM.TaskFSM.None;
+                simFSMScript.mainState = SimFSM.MainFSM.Idle;
             }
         }
     }
@@ -403,7 +316,7 @@ public class SimAI : MonoBehaviour {
         //WIDGET BENCH IS USED 
         if (col.gameObject.tag == "WidgetBenchChild")
         {
-            if (isUsingWidgetBench)
+            if (simFSMScript.mainState == SimFSM.MainFSM.Task && simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget)
             {
                 //set inProgress to true
                 isWidgetBenchInProgress = true;
@@ -415,7 +328,7 @@ public class SimAI : MonoBehaviour {
             }
         }
     }
-   
+
     //--------------------------------------------------------------------------------------------------------
 
 
@@ -581,9 +494,4 @@ public class SimAI : MonoBehaviour {
 
         rb2D.MovePosition(rb2D.position + mvecE * (moveSpeed * Time.deltaTime));
     }
-
-
-
-
-
 }

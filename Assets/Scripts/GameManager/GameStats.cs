@@ -50,24 +50,46 @@ public class GameStats : MonoBehaviour {
 	
     void Update()
     {
+ 
         
         for (var i = fridgeList.Count - 1; i > -1; i--)
         {
             if (fridgeList[i] == null)
+            {
                 fridgeList.RemoveAt(i);
+                countFridge -= 1;
+            }
+                
+        }
+        if (countFridge < 0)
+        {
+            hasFridge = false;
         }
 
-        //print(countWidgetBench);
+        print(countWidgetBench);
         for (var i = widgetBenchList.Count - 1; i > -1; i--)
         {
             if (widgetBenchList[i] == null)
+            {
                 widgetBenchList.RemoveAt(i);
+                countWidgetBench -= 1;
+            }
+                
         }
 
         for (var i = stockpileZoneList.Count - 1; i > -1; i--)
         {
             if (stockpileZoneList[i] == null)
+            {
                 stockpileZoneList.RemoveAt(i);
+                countStockpileZone -= 1;
+            }
+                
+
+        }
+        if (countStockpileZone < 0)
+        {
+            hasStockpileZone = false;
         }
 
     }

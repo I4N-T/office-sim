@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WidgetBenchScript : MonoBehaviour {
+public class AltWidgetBenchScript : MonoBehaviour {
 
     public Vector2 widgetBenchPos;
     public Vector2 widgetBenchUsePos;
@@ -13,7 +13,7 @@ public class WidgetBenchScript : MonoBehaviour {
     GameObject widgetHere;
 
     //SIMAI SCRIPT
-    public SimAI simAIScript;
+    public AltSimAI simAIScript;
 
     //PRODUCTION PROGRESS STUFF
     [Range(0, 100)]
@@ -27,7 +27,7 @@ public class WidgetBenchScript : MonoBehaviour {
 
     //USE TO DETERMINE IF BENCH IS ALREADY IN USE
     //public bool isOccupied;
-   
+
 
     void Start()
     {
@@ -66,9 +66,9 @@ public class WidgetBenchScript : MonoBehaviour {
             {
                 simAIScript.needToHaul = true;
             }
-            
+
         }
-        
+
         //if inProgress, then run the widget production method
         if (inProgress)
         {
@@ -97,7 +97,7 @@ public class WidgetBenchScript : MonoBehaviour {
                 hasWidgetOnIt = false;
             }
         }
-        
+
         //widget instantiation
         //InstantiateWidget();
 
@@ -119,7 +119,7 @@ public class WidgetBenchScript : MonoBehaviour {
             simAIScript.isWidgetBenchInProgress = false;
 
             //instantiate widget on top of bench
-            widgetPrefab = (GameObject)Resources.Load("Prefabs/widgetSmall");
+            widgetPrefab = (GameObject)Resources.Load("Prefabs/AltwidgetSmall");
             widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x, widgetBenchPos.y, 1), Quaternion.identity) as GameObject;
 
             //set widget quality based on assembler skill
@@ -131,7 +131,7 @@ public class WidgetBenchScript : MonoBehaviour {
     IEnumerator ProgressIncrement(float waitTime)
     {
         isProgressCoroutineStarted = true;
-        
+
         while (inProgress)
         {
             progressCount += 1;
@@ -149,28 +149,5 @@ public class WidgetBenchScript : MonoBehaviour {
             DeleteScript.isDelete = false;
         }
     }
-
-    //SWITCH THIS PART TO CHILD
-    /*void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "Sim")
-        {
-            simAIScript = col.gameObject.GetComponent<SimAI>();
-            //inProgress = true;
-        }
-    }*/
-
-
-
-    /*void OnCollisionStay2D(Collision2D col)
-    {
-
-        if (col.gameObject.tag == "Widget")
-            {
-                hasWidgetOnIt = true;
-
-            }
-        
-    }*/
 
 }

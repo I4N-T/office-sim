@@ -39,6 +39,10 @@ public class MainGUI : MonoBehaviour {
     public GameObject stockpileBtnObj;
     public Button stockpileBtn;
 
+    //DELETE
+    public GameObject deleteBtnObj;
+    public Button deleteBtn;
+
     void Awake()
     {
         //BUTTON LISTENERS
@@ -51,6 +55,9 @@ public class MainGUI : MonoBehaviour {
         zoneBtn.onClick.AddListener(ZoneBtnAction);
         //stockpileBtn.onClick.AddListener(StockpileBtnAction);
 
+        deleteBtn.onClick.AddListener(DeleteBtnAction);
+
+        //SET CERTAIN BUTTONS INACTIVE
         needsBtnObj.SetActive(false);
         needsPanelObj.SetActive(false);
 
@@ -60,6 +67,8 @@ public class MainGUI : MonoBehaviour {
         salesBtnObj.SetActive(false);
 
         stockpileBtnObj.SetActive(false);
+
+
 
     }
 
@@ -149,6 +158,18 @@ public class MainGUI : MonoBehaviour {
         {
             stockpileBtnObj.SetActive(false);    
         }
+    }
+
+    void DeleteBtnAction()
+    {
+        //hide every other button
+        needsBtnObj.SetActive(false);
+        productionBtnObj.SetActive(false);
+        salesBtnObj.SetActive(false);
+        needsPanelObj.SetActive(false);
+        productionPanelObj.SetActive(false);
+        stockpileBtnObj.SetActive(false);
+
     }
 
 
