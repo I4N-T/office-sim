@@ -59,6 +59,7 @@
      <Compile Include="Assets\Scripts\ItemScripts\Alternate\AltWidgetBenchScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\Alternate\AltWidgetScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\FridgeScript.cs" />
+     <Compile Include="Assets\Scripts\ItemScripts\SalesBenchScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\WidgetBenchChildScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\WidgetBenchScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\WidgetScript.cs" />

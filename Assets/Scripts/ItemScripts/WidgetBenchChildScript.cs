@@ -3,7 +3,7 @@ using System.Collections;
 
 public class WidgetBenchChildScript : MonoBehaviour {
 
-    public WidgetBenchScript widgetBenchScript; 
+    public WidgetBenchScript widgetBenchScript;
 
 
     void Start()
@@ -18,6 +18,14 @@ public class WidgetBenchChildScript : MonoBehaviour {
             widgetBenchScript.simAIScript = col.gameObject.GetComponent<SimAI>();
             //widgetBenchScript.isOccupied = true;
             //inProgress = true;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "Sim")
+        {
+            widgetBenchScript.simAIScript.isWidgetBenchInProgress = false;
         }
     }
 

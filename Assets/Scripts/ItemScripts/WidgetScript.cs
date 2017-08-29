@@ -22,18 +22,18 @@ public class WidgetScript : MonoBehaviour {
         bc2d = gameObject.GetComponent<BoxCollider2D>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         widgetPos = gameObject.transform.position;
 
         //IF ITEM IS POSSESSED, THEN UPDATE widgetPos TO THE POSITION OF THE POSSESSOR SIM
         if (simStatsScript != null)
         {
-            if (simAIScript.isHolding)
+            if (simStatsScript.itemInPossession != null && simStatsScript.itemInPossession.tag == "Widget")
             {
                 CarriedPosition();
             }
-            
+
         }
         //CarriedPosition();
     }
@@ -44,7 +44,7 @@ public class WidgetScript : MonoBehaviour {
         {
             sim = col.gameObject;
             simAIScript = col.gameObject.GetComponent<SimAI>();
-            simStatsScript = col.gameObject.GetComponent<SimStats>();     
+            simStatsScript = col.gameObject.GetComponent<SimStats>();
         }
     }
 

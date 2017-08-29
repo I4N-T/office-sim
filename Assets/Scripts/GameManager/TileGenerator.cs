@@ -5,6 +5,7 @@ public class TileGenerator : MonoBehaviour {
 
     public int squareSize;
     public GameObject tile;
+    GameObject tileForList;
 
 	// Use this for initialization
 	void Start () {
@@ -19,7 +20,8 @@ public class TileGenerator : MonoBehaviour {
         {
             for (int x = 0; x < squareSize; x++)
             {
-                Instantiate(tile, new Vector3(x, y, 0), Quaternion.identity);
+                tileForList = Instantiate(tile, new Vector3(x, y, 0), Quaternion.identity) as GameObject;
+                GameStats.tileList.Add(tileForList);
             }
         }
     }

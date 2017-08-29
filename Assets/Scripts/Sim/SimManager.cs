@@ -8,6 +8,7 @@ public class SimManager : MonoBehaviour {
     //SCRIPT INSTANCES
     public SimStats simStatsScript;
     public SimAI simAIScript;
+    public SimFSM simFSMScript;
 
     //ARRAY TO HOLD ALL OTHER SIMS SO THEIR UI CAN BE DISABLED WHEN THIS ONE IS ENABLED
     public GameObject[] otherSimArray;
@@ -36,11 +37,13 @@ public class SimManager : MonoBehaviour {
     bool hasRunDisable;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
 
         //GET SCRIPT COMPONENTS
         simStatsScript = gameObject.GetComponent<SimStats>();
         simAIScript = gameObject.GetComponent<SimAI>();
+        simFSMScript = gameObject.GetComponent<SimFSM>();
 
         //ADD THIS SIM TO THE SIMLIST
         GameStats.simList.Add(gameObject);
@@ -51,7 +54,7 @@ public class SimManager : MonoBehaviour {
             SimStats theScript = sim.GetComponent<SimStats>();
             //print("simList: " + theScript.simName);
         }
-        
+
 
         //GET OTHER SIM OBJECTS ARRAY
         //otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
@@ -100,12 +103,13 @@ public class SimManager : MonoBehaviour {
         simHungerText.enabled = false;
         //simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
 
-        simItemText.enabled = false;      
+        simItemText.enabled = false;
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
 
         //if Sim is selected then enable text and disable other sims' text
         if (isSimSelected == true)
@@ -116,7 +120,7 @@ public class SimManager : MonoBehaviour {
                 DisableOtherSimText();
                 hasRunDisable = true;
             }
-            
+
 
             //update and display this sim's text
             StatsTextUpdate();
@@ -136,12 +140,12 @@ public class SimManager : MonoBehaviour {
             simItemText.enabled = false;
         }
 
-        
+
 
         if (Input.GetMouseButtonUp(1))
         {
             isSimSelected = false;
-            
+
         }
 
     }
@@ -152,39 +156,43 @@ public class SimManager : MonoBehaviour {
         simNameText.text = "Name: " + simStatsScript.simName;
         simEnergyText.text = "Energy: " + simStatsScript.energy + "/" + "100";
         simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
-        
 
-        if (simAIScript.isIdle)
-        {
-            simStatusText.text = "idle";
-        }
-        else if (simAIScript.isIdle == false)
-        {
-            if (simAIScript.isGettingFood)
-            {
-                simStatusText.text = "getting food";
-            }
-            if (simAIScript.isUsingWidgetBench)
-            {
-                simStatusText.text = "using " + simStatsScript.objectInUse;
-            }
-            if (simAIScript.needToHaul)
-            {
-                if (simStatsScript.itemInPossession != null)
+
+         if (simFSMScript.mainState == SimFSM.MainFSM.Idle)
+         {
+             simStatusText.text = "idle";
+         }
+         else if (simFSMScript.mainState == SimFSM.MainFSM.Task)
+         {
+             if (simFSMScript.taskState == SimFSM.TaskFSM.GettingFood)
+             {
+                 simStatusText.text = "getting food";
+             }
+             if (simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget && simAIScript.needToHaul == false)
+             {
+                 simStatusText.text = "Making Widget";
+                if (simStatsScript.objectInUse != null)
                 {
-                    simStatusText.text = "hauling " + simStatsScript.itemInPossession.name;
-                }              
-            }
-        }
+                    simStatusText.text = "Making Widget at " + simStatsScript.objectInUse;
+                }
+             }
+             if (simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget && simAIScript.needToHaul == true)
+             {
+                 if (simStatsScript.itemInPossession != null)
+                 {
+                     simStatusText.text = "hauling " + simStatsScript.itemInPossession.name;
+                 }
+             }
+         }
 
-        if (simAIScript.isHolding)
-        {
-            simItemText.text = "Item: " + simStatsScript.itemInPossession.name;
-        }
-        else if (!simAIScript.isHolding)
-        {
-            simItemText.text = "Item: ";
-        }
+         if (simStatsScript.itemInPossession != null)
+         {
+             simItemText.text = "Item: " + simStatsScript.itemInPossession.name;
+         }
+         else if (simStatsScript.itemInPossession == null)
+         {
+             simItemText.text = "Item: ";
+         }
     }
 
     void DisableOtherSimText()
@@ -200,7 +208,7 @@ public class SimManager : MonoBehaviour {
 
                 otherSimManagerScript.hasRunDisable = false;
                 otherSimManagerScript.isSimSelected = false;
-                
+
 
             }
         }

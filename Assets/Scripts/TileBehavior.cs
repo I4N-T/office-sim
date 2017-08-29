@@ -21,6 +21,8 @@ public class TileBehavior : MonoBehaviour {
     public GameObject gameManagerObject;
     public Inputs inputsScript;
 
+    //public bool isSimOnTile;
+
     //WHAT TYPE OF ZONE IS THIS TILE
     public bool isStockpileZoneHighlight;
     public bool isStockpileZone;
@@ -38,56 +40,19 @@ public class TileBehavior : MonoBehaviour {
 
     void Update()
     {
-        //CHANGE SPRITE FOR STOCKPILE TILES
-        /*if (Inputs.drawingZoneStockpile)
-        {
-            if (inputsScript.zoneRect.Contains(gameObject.transform.position))
-            {
-                rend.sprite = zoneSpriteArray[0];
-                //isStockpileZone = true;
-            }
-            else if (!inputsScript.zoneRect.Contains(gameObject.transform.position))
-            {
-                rend.sprite = groundSprite;
-            }
-        }
         
-        else if (!Inputs.drawingZoneStockpile)
-        {
-            if (inputsScript.zoneRect.Contains(gameObject.transform.position))
-            {
-                isStockpileZone = true;
-            }
-        }   */
-
-        //INSTANTIATE STOCKPILE ZONE OBJECT ON TOP OF TILES
-        /*if (Inputs.drawingZoneStockpile)
-        {
-            if (inputsScript.zoneRect.Contains(gameObject.transform.position))
-            {
-                //rend.sprite = zoneSpriteArray[0];
-                //isStockpileZone = true;
-            }
-            else if (!inputsScript.zoneRect.Contains(gameObject.transform.position))
-            {
-                rend.sprite = groundSprite;
-            }
-        }
-
-        else if (!Inputs.drawingZoneStockpile && !isStockpileZone)
-        {
-            if (inputsScript.zoneRect.Contains(gameObject.transform.position))
-            {
-                isStockpileZone = true;
-                //Instantiate(stockpileZoneObj, gameObject.transform.position, Quaternion.identity);
-            }
-        }*/
 
 
 
     }
 
+    //METHODS
+    /*void WidgetDetect()
+    {
+        
+    }*/
 	
+    //MOUSE EVENTS
 	void OnMouseOver()
     {
         if (Inputs.placingWidgetBench == true)
@@ -104,21 +69,15 @@ public class TileBehavior : MonoBehaviour {
 
     void OnMouseExit()
     {
-        //if (!isStockpileZone)
-        //{
             rend.sortingOrder = 0;
-            rend.sprite = groundSprite;
-       // }
-        
-       // if (isStockpileZone)
-       // {
-           // rend.sprite = zoneSpriteArray[0];
-        //}
+            rend.sprite = groundSprite; 
     }
 
+
+    //COLLISIONS AND TRIGGERS
     void OnTriggerStay2D(Collider2D col)
     {
-        if (col.gameObject.tag != "Sim" && itemOnTile == null)
+        if (col.gameObject.tag != "Sim" && col.gameObject.tag != "StockpileZone" && itemOnTile == null)
         {
             itemOnTile = col.gameObject;
         }
@@ -126,13 +85,36 @@ public class TileBehavior : MonoBehaviour {
         {
             isStockpileZone = true;
         }
+
+        //keep up with widgets in stockpile
+       /* if (isStockpileZone)
+        {
+            if (itemOnTile != null)
+            {
+                if (itemOnTile.tag == "Widget")
+                {
+                    if (!isSimOnTile)
+                    {
+                        GameStats.countWidgetInStockpile++;
+                    }
+                    
+                }
+            }
+        }*/
     }
 
     void OnTriggerExit2D(Collider2D col)
     {
         if (col.gameObject.tag != "Sim")
         {
-            itemOnTile = null;
+            //only set itemOnTile to null IF the item exiting the trigger is the item that was stored in itemOnTile
+            if (itemOnTile != null)
+            {
+                if (itemOnTile.GetInstanceID() == col.gameObject.GetInstanceID())
+                {
+                    itemOnTile = null;
+                }
+            }  
         }
         if (col.gameObject.tag == "StockpileZone")
         {

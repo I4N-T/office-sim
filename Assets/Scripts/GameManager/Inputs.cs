@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class Inputs : MonoBehaviour {
 
@@ -67,7 +68,15 @@ public class Inputs : MonoBehaviour {
             placingFridge = false;
             //placingwhatever = false;
 
+            if (drawingZoneStockpile && firstCornerDone)
+            {
+                firstCornerDone = false;
+                drawingZoneStockpile = false;
+                Destroy(GameStats.stockpileZoneList.Last());
+            }
+
             drawingZoneStockpile = false;
+
         }
 
         //TOGGLE BUILD WIDGET BENCH
@@ -112,7 +121,6 @@ public class Inputs : MonoBehaviour {
             {
                 if (!firstCornerDone)
                 {
-                    print("it ran");
                     //zoneRectCornerStart = mousePosition;
                     zoneRect.min = mousePosition;
                     GameObject stockpileZoneNew = Instantiate(stockpileZoneObj, zoneRect.min, Quaternion.identity) as GameObject;
@@ -122,7 +130,8 @@ public class Inputs : MonoBehaviour {
                 else if (firstCornerDone)
                 {
                     //zoneRect.max = mousePosition;
- 
+
+                    GameStats.countStockpileZone++;
                     firstCornerDone = false;
                     drawingZoneStockpile = false;
                 }

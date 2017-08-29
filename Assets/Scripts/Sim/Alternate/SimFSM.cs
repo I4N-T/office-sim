@@ -4,7 +4,7 @@ using System.Collections;
 public class SimFSM : MonoBehaviour {
 
     //SCRIPTS
-    AltSimAI simAIScript;
+    SimAI simAIScript;
     SimStats simStatsScript;
 
 	public enum MainFSM
@@ -20,7 +20,8 @@ public class SimFSM : MonoBehaviour {
     {
         None,
         GettingFood,
-        MakingWidget
+        MakingWidget,
+        Sales
         
     }
 
@@ -29,7 +30,7 @@ public class SimFSM : MonoBehaviour {
     void Start()
     {
         //GET SCRIPTS
-        simAIScript = gameObject.GetComponent<AltSimAI>();
+        simAIScript = gameObject.GetComponent<SimAI>();
         simStatsScript = gameObject.GetComponent<SimStats>();
 
     }
@@ -71,26 +72,18 @@ public class SimFSM : MonoBehaviour {
             case TaskFSM.MakingWidget:
                 if (!simAIScript.needToHaul)
                 {
-                    if (simAIScript.IsWidgetBenchAvailable())
-                    {
-                        //simAIScript.isUsingWidgetBench = true;
-
                         simAIScript.GetTargetPosWidgetBench();
-                        simAIScript.GoToward(simAIScript.targetPos);
-                    }
-                    else if (!simAIScript.IsWidgetBenchAvailable())
-                    {
-                        taskState = TaskFSM.None;
-                        mainState = MainFSM.Idle;
-                    }
+                        simAIScript.GoToward(simAIScript.targetPos);  
                 }
                 else if (simAIScript.needToHaul)
                 {
                     simAIScript.HaulWidget();
-                    //this next line is needed to prevent another sim from going isUsingWidgetBench = true while this sim changes it's needtohaul bool
-                    //simAIScript.isUsingWidgetBench = true;
-                }
 
+                }
+                break;
+            case TaskFSM.Sales:
+                simAIScript.GetTargetPosSalesBench();
+                simAIScript.GoToward(simAIScript.targetPos);
                 break;
 
             
