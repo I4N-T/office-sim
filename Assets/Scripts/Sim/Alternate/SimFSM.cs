@@ -39,6 +39,7 @@ public class SimFSM : MonoBehaviour {
     void FixedUpdate()
     {
         MainFSMMethod();
+        //print("sim: " + simStatsScript.simName + " mainState: " + mainState + " taskState: " + taskState);
     }
 
     public void MainFSMMethod()
@@ -47,6 +48,7 @@ public class SimFSM : MonoBehaviour {
         {
             case MainFSM.Idle:
                 simAIScript.IdleWander();
+                simStatsScript.objectInUse = null;
                 break;
 
             case MainFSM.Task:
@@ -81,6 +83,7 @@ public class SimFSM : MonoBehaviour {
 
                 }
                 break;
+
             case TaskFSM.Sales:
                 simAIScript.GetTargetPosSalesBench();
                 simAIScript.GoToward(simAIScript.targetPos);

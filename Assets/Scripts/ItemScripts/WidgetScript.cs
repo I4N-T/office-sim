@@ -17,6 +17,9 @@ public class WidgetScript : MonoBehaviour {
     public SimAI simAIScript;
     public SimStats simStatsScript;
 
+    //QUALITY
+    public string widgetQuality;
+
     void Start()
     {
         bc2d = gameObject.GetComponent<BoxCollider2D>();

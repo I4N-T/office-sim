@@ -137,7 +137,7 @@ public class GameStats : MonoBehaviour {
             hasStockpileZone = true;
         }
 
-        print("widgets in pile: " + countWidgetInStockpile);
+        countWidgetInStockpile = widgetList.Count - 1;
         for (var i = widgetList.Count - 1; i > -1; i--)
         {
             if (widgetList[i] == null)

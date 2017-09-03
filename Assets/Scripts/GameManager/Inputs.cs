@@ -19,6 +19,7 @@ public class Inputs : MonoBehaviour {
     //bools for placement
     public static bool placingWidgetBench = false;
     public static bool placingFridge = false;
+    public static bool placingSalesBench = false;
     //bool isMouseOverUI;
 
     //BOOLS FOR ZONE DRAWING
@@ -35,6 +36,7 @@ public class Inputs : MonoBehaviour {
     //BUILD STRUCTURES OBJECTS
     public GameObject widgetBenchObject;
     public GameObject fridgeObject;
+    public GameObject salesBenchObject;
 
 	// Use this for initialization
 	void Start () {
@@ -66,6 +68,7 @@ public class Inputs : MonoBehaviour {
         {
             placingWidgetBench = false;
             placingFridge = false;
+            placingSalesBench = false;
             //placingwhatever = false;
 
             if (drawingZoneStockpile && firstCornerDone)
@@ -108,9 +111,22 @@ public class Inputs : MonoBehaviour {
         {
             if (Input.GetMouseButtonUp(0) && GUIUtility.hotControl == 0)
             {
-                GameStats.dollars -= 300;
+                GameStats.dollars -= 200;
                 Instantiate(fridgeObject, mousePosition, Quaternion.identity);
                 placingFridge = false;
+            }
+        }
+
+        //sales bench
+        if (placingSalesBench == true && IsMouseOverUI() == false)
+        {
+
+            if (Input.GetMouseButtonUp(0) && GUIUtility.hotControl == 0)
+            {
+                GameStats.dollars -= 300;
+                Instantiate(salesBenchObject, mousePosition, Quaternion.identity);
+                placingSalesBench = false;
+
             }
         }
 

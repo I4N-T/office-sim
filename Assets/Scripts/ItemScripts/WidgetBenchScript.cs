@@ -84,7 +84,7 @@ public class WidgetBenchScript : MonoBehaviour {
         }
 
         //determine if widget bench has a widget set on it that needs to be moved before the bench can be used again
-        if (widgetPrefab != null)
+        if (widgetHere != null)
         {
             Vector3 wPos = new Vector3(widgetHere.transform.position.x, widgetHere.transform.position.y, widgetHere.transform.position.z);
 
@@ -97,9 +97,6 @@ public class WidgetBenchScript : MonoBehaviour {
                 hasWidgetOnIt = false;
             }
         }
-
-        //widget instantiation
-        //InstantiateWidget();
 
     }
 
@@ -120,7 +117,8 @@ public class WidgetBenchScript : MonoBehaviour {
 
             //instantiate widget on top of bench
             widgetPrefab = (GameObject)Resources.Load("Prefabs/widgetSmall");
-            widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x, widgetBenchPos.y, -1), Quaternion.identity) as GameObject;
+            widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x, widgetBenchPos.y - .2f, -1), Quaternion.identity) as GameObject;
+            
 
             //set widget quality based on assembler skill
             //set progressCount back to 0

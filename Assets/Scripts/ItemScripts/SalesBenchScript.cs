@@ -20,7 +20,7 @@ public class SalesBenchScript : MonoBehaviour {
     GameObject sim;
     SimAI simAIScript;
 
-    // Use this for initialization
+    
     void Start () {
         GameStats.hasSalesBench = true;
         salesBenchPos = gameObject.transform.position;
@@ -33,7 +33,7 @@ public class SalesBenchScript : MonoBehaviour {
 
     }
 	
-	// Update is called once per frame
+	
 	void Update () {
         //Update sales bench position 
         salesBenchPos = gameObject.transform.position;
@@ -42,6 +42,24 @@ public class SalesBenchScript : MonoBehaviour {
         {
             SalesInProgress();
         }
+        else if (!inProgress)
+        {
+            simAIScript = null;
+        }
+
+        //this stuff stops bench from running when sim isn't working on it anymore
+        if (simAIScript != null)
+        {
+            if (simAIScript.simStatsScript.objectInUse == null)
+            {
+                print("oh this one did it");
+                
+                StopCoroutine(progressCoroutine);
+                isProgressCoroutineStarted = false;
+                inProgress = false;
+            }
+        }
+        
 
     }
 
@@ -60,9 +78,19 @@ public class SalesBenchScript : MonoBehaviour {
             //simAIScript.isWidgetBenchInProgress = false;
 
             //have chance to sell a widget
+            //price based on quality
+            GameStats.dollars += 75;
+            Destroy(GameStats.widgetList[0]);
 
             //set progressCount back to 0
             progressCount = 0;
+
+            //if more widgets yet to sell, keep going; else if no widgets then go idle
+            if (GameStats.countWidgetInStockpile >= 0)
+            {
+                isProgressCoroutineStarted = false;
+            }
+            
         }
     }
 
@@ -87,6 +115,26 @@ public class SalesBenchScript : MonoBehaviour {
             {
                 inProgress = true;
             }
+        }
+    }
+
+    /*void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "Sim")
+        {
+            inProgress = false;
+        }
+    }*/
+
+    //DELETE OBJECT
+    void OnMouseDown()
+    {
+        //print("click happened");
+        if (DeleteScript.isDelete)
+        {
+            //destroy object
+            Destroy(gameObject);
+            DeleteScript.isDelete = false;
         }
     }
 }

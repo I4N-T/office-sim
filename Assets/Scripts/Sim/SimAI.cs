@@ -31,11 +31,13 @@ public class SimAI : MonoBehaviour {
     public GameObject[] otherSimArray;
 
     //SIM STATS SCRIPT INSTANCE
-    SimStats simStatsScript;
+    public SimStats simStatsScript;
 
     public SimFSM simFSMScript;
 
     public int objID;
+
+    public bool isStarted;
 
 
     void Start()
@@ -122,8 +124,27 @@ public class SimAI : MonoBehaviour {
             {
                 if (GameStats.hasSalesBench)
                 {
-                    simFSMScript.mainState = SimFSM.MainFSM.Task;
-                    simFSMScript.taskState = SimFSM.TaskFSM.Sales;
+                    //if unnoccupied sales station is available
+                    if (IsSalesBenchAvailable())
+                    {
+                        //You can't sell what you don't have
+                        if (GameStats.hasWidgetInStockpile)
+                        {
+                            simFSMScript.mainState = SimFSM.MainFSM.Task;
+                            simFSMScript.taskState = SimFSM.TaskFSM.Sales;
+                        }
+                        else if (!GameStats.hasWidgetInStockpile) //might not work well once priorities are implemented
+                        {
+                            simFSMScript.mainState = SimFSM.MainFSM.Idle;
+                            simFSMScript.taskState = SimFSM.TaskFSM.None;
+                        }
+                    }
+                    else if (!IsSalesBenchAvailable())
+                    {
+                        simFSMScript.mainState = SimFSM.MainFSM.Idle;
+                        simFSMScript.taskState = SimFSM.TaskFSM.None;
+                    }
+                    
                 }
             }
 
@@ -251,7 +272,6 @@ public class SimAI : MonoBehaviour {
                             if (tileBehaviorScript.itemOnTile.GetInstanceID() == simStatsScript.itemInPossession.GetInstanceID())
                             {
                                 targetPos = tile.transform.position;
-                                print("ran target: " + targetPos);
                                 return;
                             }
                             /*else if (tileBehaviorScript.itemOnTile.GetInstanceID() != simStatsScript.itemInPossession.GetInstanceID())
@@ -303,20 +323,35 @@ public class SimAI : MonoBehaviour {
         float mag1 = 0;
         float mag2 = 9999;
 
-        //for each fridge in fridgeList, compare positions to determine which is closest
+        //for each bench in salesBenchList, compare positions to determine which is closest
         foreach (GameObject salesBench in GameStats.salesBenchList)
         {
-            //the null check is to prevent a NullReferenceException error upon deleting fridge
+            //the null check is to prevent a NullReferenceException error upon deleting bench
             if (salesBench != null)
             {
                 salesBenchScript = salesBench.GetComponent<SalesBenchScript>();
-                mag1 = Vector2.Distance(simStatsScript.simPos, salesBenchScript.salesBenchPos);
-                if (mag1 < mag2)
+                //if this sim is using this bench already, set target so he stays
+                if (objID == salesBenchScript.gameObject.GetInstanceID())
                 {
-                    mag2 = mag1;
+                    print("runningRRR");
                     targetPos = salesBenchScript.salesBenchPos;
-                    simStatsScript.objectInUse = salesBench;
+
+                    return;
                 }
+
+                //only get position of benches not being used
+                if (!salesBenchScript.inProgress)
+                {
+                    mag1 = Vector2.Distance(simStatsScript.simPos, salesBenchScript.salesBenchPos);
+                    if (mag1 < mag2)
+                    {
+                        mag2 = mag1;
+                        targetPos = salesBenchScript.salesBenchPos;
+                        /*simStatsScript.objectInUse = salesBench;
+                        objID = salesBench.GetInstanceID();*/
+                    }
+                }
+                
             }
 
 
@@ -334,9 +369,12 @@ public class SimAI : MonoBehaviour {
         //if simPos = targetPos, drop the item
         if (simStatsScript.simPos == targetPos)
         {
+            //add widget to list
+            GameStats.widgetList.Add(simStatsScript.itemInPossession);
+
             needToHaul = false;
             simStatsScript.itemInPossession = null;
-            GameStats.countWidgetInStockpile++;
+            //GameStats.countWidgetInStockpile++;
         }
     }
 
@@ -367,6 +405,43 @@ public class SimAI : MonoBehaviour {
             }
         }
         if (beingUsed < GameStats.countWidgetBench)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool IsSalesBenchAvailable()
+    {
+        SimAI otherSimAIScript;
+        SimFSM otherSimFSMScript;
+        int beingUsed = -1;
+
+        if (GameStats.countSalesBench >= 0)
+        {
+            foreach (GameObject otherSimObj in otherSimArray)
+            {
+                if (otherSimObj != gameObject)
+                {
+                    otherSimAIScript = otherSimObj.GetComponent<SimAI>();
+                    otherSimFSMScript = otherSimObj.GetComponent<SimFSM>();
+                    if ((otherSimFSMScript.mainState == SimFSM.MainFSM.Task && otherSimFSMScript.taskState == SimFSM.TaskFSM.Sales))
+                    {
+                        if (otherSimAIScript.simStatsScript.objectInUse != null)
+                        {
+                            if (otherSimAIScript.simStatsScript.objectInUse.tag == "SalesBench")
+                            {
+                                beingUsed++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (beingUsed < GameStats.countSalesBench)
         {
             return true;
         }
@@ -420,7 +495,13 @@ public class SimAI : MonoBehaviour {
         //SALES BENCH
         if (col.gameObject.tag == "SalesBench")
         {
-
+            if (simFSMScript.mainState == SimFSM.MainFSM.Task && simFSMScript.taskState == SimFSM.TaskFSM.Sales)
+            {
+                //set the col.parent to be the object in use for this sim
+                simStatsScript.objectInUse = col.transform.gameObject;
+                //consider changing the method from using objID to just using the gameobject itself
+                objID = simStatsScript.objectInUse.GetInstanceID();
+            }
         }
     }
 

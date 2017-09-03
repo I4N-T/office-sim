@@ -64,7 +64,12 @@ public class TileBehavior : MonoBehaviour {
         {
             rend.sprite = highlightSpriteArray[2];
             rend.sortingOrder = 1;
-        }    
+        }
+        else if (Inputs.placingSalesBench == true)
+        {
+            rend.sprite = highlightSpriteArray[3];
+            rend.sortingOrder = 1;
+        }
     }
 
     void OnMouseExit()
