@@ -48,6 +48,9 @@ public class MainGUI : MonoBehaviour {
     public GameObject deleteBtnObj;
     public Button deleteBtn;
 
+    //DELETE CURSOR (NOT REALLY GUI STUFF)
+    GameObject deleteCursor;
+
     void Awake()
     {
         //BUTTON LISTENERS
@@ -81,10 +84,10 @@ public class MainGUI : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        deleteCursor = (GameObject)Resources.Load("Prefabs/cancelCursor");
 
 
-        
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -92,7 +95,17 @@ public class MainGUI : MonoBehaviour {
         //RESOURCES
         dollarsText.text = "Dollars: $" + GameStats.dollars;
 
-        //UI MENU
+        //CLOSE ON RIGHT CLICK
+        if (Input.GetMouseButtonUp(1))
+        {
+            needsBtnObj.SetActive(false);
+            productionBtnObj.SetActive(false);
+            salesBtnObj.SetActive(false);
+            needsPanelObj.SetActive(false);
+            productionPanelObj.SetActive(false);
+            salesPanelObj.SetActive(false);
+            stockpileBtnObj.SetActive(false);
+        }
 
         
 	}
@@ -197,6 +210,10 @@ public class MainGUI : MonoBehaviour {
         productionPanelObj.SetActive(false);
         salesPanelObj.SetActive(false);
         stockpileBtnObj.SetActive(false);
+
+        //instantiate red X cursor
+        
+        Instantiate(deleteCursor, MousePosition.mouseposition, Quaternion.identity);
 
     }
 

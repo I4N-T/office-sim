@@ -14,7 +14,9 @@ public class SalesBenchScript : MonoBehaviour {
     Coroutine progressCoroutine = null;
 
     //WIDGETS INTERACTION
-    
+    WidgetScript thisWidgetScript;
+    int widgetSellPrice;
+
 
     //SIM INTERACTING WITH THIS BENCH
     GameObject sim;
@@ -52,11 +54,18 @@ public class SalesBenchScript : MonoBehaviour {
         {
             if (simAIScript.simStatsScript.objectInUse == null)
             {
-                print("oh this one did it");
-                
                 StopCoroutine(progressCoroutine);
                 isProgressCoroutineStarted = false;
                 inProgress = false;
+            }
+            else if (simAIScript.simStatsScript.objectInUse != null)
+            {
+                if (simAIScript.simStatsScript.objectInUse.tag == "Fridge")
+                {
+                    StopCoroutine(progressCoroutine);
+                    isProgressCoroutineStarted = false;
+                    inProgress = false;
+                }
             }
         }
         
@@ -77,13 +86,46 @@ public class SalesBenchScript : MonoBehaviour {
             inProgress = false;
             //simAIScript.isWidgetBenchInProgress = false;
 
+            thisWidgetScript = GameStats.widgetList[0].GetComponent<WidgetScript>();
+
             //have chance to sell a widget
-            //price based on quality
-            GameStats.dollars += 75;
+            //price based on quality 
+            if (thisWidgetScript.widgetQuality == "Bad")
+            {
+                widgetSellPrice += 50;
+            }
+            else if (thisWidgetScript.widgetQuality == "Average")
+            {
+                widgetSellPrice += 75;
+            }
+            if (thisWidgetScript.widgetQuality == "Good")
+            {
+                widgetSellPrice += 100;
+            }
+
+            //bonus or detriment based on sales skill
+            if (simAIScript.simStatsScript.sales <= 3)
+            {
+                widgetSellPrice = Mathf.RoundToInt(widgetSellPrice * .75f);
+                print("low");
+            }
+            else if (simAIScript.simStatsScript.sales > 3 && simAIScript.simStatsScript.sales < 7)
+            {
+                print("medium");
+            }
+            else if (simAIScript.simStatsScript.sales >= 7)
+            {
+                widgetSellPrice = Mathf.RoundToInt(widgetSellPrice * 1.25f);
+                print("high");
+            }
+
+            GameStats.dollars += widgetSellPrice;
+            print("widget sold for $" + widgetSellPrice);
             Destroy(GameStats.widgetList[0]);
 
             //set progressCount back to 0
             progressCount = 0;
+            widgetSellPrice = 0;
 
             //if more widgets yet to sell, keep going; else if no widgets then go idle
             if (GameStats.countWidgetInStockpile >= 0)

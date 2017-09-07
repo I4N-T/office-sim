@@ -63,13 +63,19 @@ public class WidgetScript : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D col)
     {
-        if (col.gameObject.tag == "Sim")
+        if (sim != null)
         {
-            sim = null;
-            simAIScript = null;
-            simStatsScript = null;
-            bc2d.enabled = false;
+            //this prevents needtohaul sim from dropping widget upon bumping into another sim
+            if (col.gameObject.tag == "Sim" && col.gameObject.GetInstanceID() == sim.GetInstanceID())
+            {
+                print("this shit right here");
+                sim = null;
+                simAIScript = null;
+                simStatsScript = null;
+                bc2d.enabled = false;
+            }
         }
+        
     }
 
     void CarriedPosition()

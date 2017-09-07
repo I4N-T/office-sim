@@ -46,9 +46,9 @@ public class Inputs : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {     
-        
+	void Update () {
 
+        print(TileBehavior.rendAngle);
         //UPDATE ISMOUSEOVERUI
         IsMouseOverUI();
 
@@ -80,6 +80,11 @@ public class Inputs : MonoBehaviour {
 
             drawingZoneStockpile = false;
 
+            if (DeleteScript.isDelete)
+            {
+                DeleteScript.isDelete = false;
+            }
+
         }
 
         //TOGGLE BUILD WIDGET BENCH
@@ -100,7 +105,7 @@ public class Inputs : MonoBehaviour {
             if (Input.GetMouseButtonUp(0) && GUIUtility.hotControl == 0)
             {
                 GameStats.dollars -= 300;
-                Instantiate(widgetBenchObject, mousePosition, Quaternion.identity);
+                Instantiate(widgetBenchObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
                 placingWidgetBench = false;
                
             }
@@ -112,7 +117,7 @@ public class Inputs : MonoBehaviour {
             if (Input.GetMouseButtonUp(0) && GUIUtility.hotControl == 0)
             {
                 GameStats.dollars -= 200;
-                Instantiate(fridgeObject, mousePosition, Quaternion.identity);
+                Instantiate(fridgeObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
                 placingFridge = false;
             }
         }
@@ -124,7 +129,7 @@ public class Inputs : MonoBehaviour {
             if (Input.GetMouseButtonUp(0) && GUIUtility.hotControl == 0)
             {
                 GameStats.dollars -= 300;
-                Instantiate(salesBenchObject, mousePosition, Quaternion.identity);
+                Instantiate(salesBenchObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
                 placingSalesBench = false;
 
             }

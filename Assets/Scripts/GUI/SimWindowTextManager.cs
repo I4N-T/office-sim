@@ -1,17 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
-public class SimManager : MonoBehaviour {
+public class SimWindowTextManager : MonoBehaviour {
 
     //SCRIPT INSTANCES
     public SimStats simStatsScript;
     public SimAI simAIScript;
     public SimFSM simFSMScript;
+    SimManager simManagerScript;
 
     //ARRAY TO HOLD ALL OTHER SIMS SO THEIR UI CAN BE DISABLED WHEN THIS ONE IS ENABLED
     public GameObject[] otherSimArray;
+    //SIM INSTANCE
+    public GameObject simObj;
 
     //GUI STUFF
     GameObject canvasObj;
@@ -45,13 +47,7 @@ public class SimManager : MonoBehaviour {
         simAIScript = gameObject.GetComponent<SimAI>();
         simFSMScript = gameObject.GetComponent<SimFSM>();
 
-        //ADD THIS SIM TO THE SIMLIST
-        GameStats.simList.Add(gameObject);
-
-
-
-        //GET OTHER SIM OBJECTS ARRAY
-        //otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
+       
 
         //GET CANVAS OBJECT
         canvasObj = transform.GetChild(0).gameObject;
@@ -73,11 +69,11 @@ public class SimManager : MonoBehaviour {
 
 
         //GET ACTUAL CANVAS FROM CANVAS OBJECT
-        canvas = canvasObj.GetComponent<Canvas>();
+        //canvas = canvasObj.GetComponent<Canvas>();
 
         //SET CANVAS RENDER CAMERA
-        canvas.renderMode = RenderMode.ScreenSpaceCamera;
-        canvas.worldCamera = Camera.main;
+        //canvas.renderMode = RenderMode.ScreenSpaceCamera;
+        //canvas.worldCamera = Camera.main;
 
         //GET ACTUAL TEXT COMPONENTS FROM OBJECTS
         simNameText = simNameTextObj.GetComponent<Text>();
@@ -104,7 +100,7 @@ public class SimManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-
+        CheckSimSelected();
 
         //if Sim is selected then enable text and disable other sims' text
         if (isSimSelected == true)
@@ -145,6 +141,19 @@ public class SimManager : MonoBehaviour {
 
     }
 
+    //??????????????????????????????????????????????????????????????????
+    void CheckSimSelected()
+    {
+        foreach (GameObject sim in GameStats.simList)
+        {
+            simManagerScript = sim.GetComponent<SimManager>();
+            if (simManagerScript.isSimSelected)
+            {
+                simObj = sim;
+            }
+        }
+    }
+
     void StatsTextUpdate()
     {
         //print("hunger from script: " + simStatsScript.hunger);
@@ -153,31 +162,31 @@ public class SimManager : MonoBehaviour {
         simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
 
 
-         if (simFSMScript.mainState == SimFSM.MainFSM.Idle)
-         {
-             simStatusText.text = "idle";
-         }
-         else if (simFSMScript.mainState == SimFSM.MainFSM.Task)
-         {
-             if (simFSMScript.taskState == SimFSM.TaskFSM.GettingFood)
-             {
-                 simStatusText.text = "getting food";
-             }
-             if (simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget && simAIScript.needToHaul == false)
-             {
-                 simStatusText.text = "Making Widget";
+        if (simFSMScript.mainState == SimFSM.MainFSM.Idle)
+        {
+            simStatusText.text = "idle";
+        }
+        else if (simFSMScript.mainState == SimFSM.MainFSM.Task)
+        {
+            if (simFSMScript.taskState == SimFSM.TaskFSM.GettingFood)
+            {
+                simStatusText.text = "getting food";
+            }
+            if (simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget && simAIScript.needToHaul == false)
+            {
+                simStatusText.text = "Making Widget";
                 if (simStatsScript.objectInUse != null)
                 {
                     simStatusText.text = "Making Widget at " + simStatsScript.objectInUse;
                 }
-             }
-             if (simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget && simAIScript.needToHaul == true)
-             {
-                 if (simStatsScript.itemInPossession != null)
-                 {
-                     simStatusText.text = "hauling " + simStatsScript.itemInPossession.name;
-                 }
-             }
+            }
+            if (simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget && simAIScript.needToHaul == true)
+            {
+                if (simStatsScript.itemInPossession != null)
+                {
+                    simStatusText.text = "hauling " + simStatsScript.itemInPossession.name;
+                }
+            }
             if (simFSMScript.taskState == SimFSM.TaskFSM.Sales)
             {
                 simStatusText.text = "Making cold calls";
@@ -188,14 +197,14 @@ public class SimManager : MonoBehaviour {
             }
         }
 
-         if (simStatsScript.itemInPossession != null)
-         {
-             simItemText.text = "Item: " + simStatsScript.itemInPossession.name;
-         }
-         else if (simStatsScript.itemInPossession == null)
-         {
-             simItemText.text = "Item: ";
-         }
+        if (simStatsScript.itemInPossession != null)
+        {
+            simItemText.text = "Item: " + simStatsScript.itemInPossession.name;
+        }
+        else if (simStatsScript.itemInPossession == null)
+        {
+            simItemText.text = "Item: ";
+        }
     }
 
     void DisableOtherSimText()
@@ -209,19 +218,11 @@ public class SimManager : MonoBehaviour {
                 //disable all text
                 SimManager otherSimManagerScript = otherSimObj.GetComponent<SimManager>();
 
-                otherSimManagerScript.hasRunDisable = false;
-                otherSimManagerScript.isSimSelected = false;
+                //otherSimManagerScript.hasRunDisable = false;
+                //otherSimManagerScript.isSimSelected = false;
 
 
             }
         }
     }
-
-
-    void OnMouseDown()
-    {
-        isSimSelected = true;
-    }
-
-
 }

@@ -6,6 +6,7 @@ public class TileBehavior : MonoBehaviour {
 
 
     SpriteRenderer rend;
+    public static float rendAngle;
 
 
     //ITEM SPRITES FOR PLACEMENT - consider using Dict instead of array
@@ -40,17 +41,34 @@ public class TileBehavior : MonoBehaviour {
 
     void Update()
     {
-        
-
-
 
     }
 
     //METHODS
-    /*void WidgetDetect()
+    void RotateSprite()
     {
-        
-    }*/
+        if (Input.GetKeyDown("r"))
+        {
+            rend.transform.Rotate(Vector3.forward * -90);
+            rendAngle -= 90f;
+            //this is necessary for the conditionaly statements in the widget instantiation logic of the widgetbenchscript
+            if (rendAngle == -90f)
+            {
+                rendAngle = 270f;
+            }       
+        }
+        if (Input.GetKeyDown("e"))
+        {
+            rend.transform.Rotate(Vector3.forward * 90);
+            rendAngle += 90f;
+            //this is necessary for the conditionaly statements in the widget instantiation logic of the widgetbenchscript
+            if (rendAngle == 360f)
+            {
+                rendAngle = 0;
+            }
+        }
+        rend.transform.rotation = Quaternion.AngleAxis(rendAngle, Vector3.forward);
+    }
 	
     //MOUSE EVENTS
 	void OnMouseOver()
@@ -59,23 +77,27 @@ public class TileBehavior : MonoBehaviour {
         {
             rend.sprite = highlightSpriteArray[1];
             rend.sortingOrder = 1;
+            RotateSprite();
+            
         }
         else if (Inputs.placingFridge == true)
         {
             rend.sprite = highlightSpriteArray[2];
             rend.sortingOrder = 1;
+            RotateSprite();
         }
         else if (Inputs.placingSalesBench == true)
         {
             rend.sprite = highlightSpriteArray[3];
             rend.sortingOrder = 1;
+            RotateSprite();
         }
     }
 
     void OnMouseExit()
     {
-            rend.sortingOrder = 0;
-            rend.sprite = groundSprite; 
+        rend.sortingOrder = 0;
+        rend.sprite = groundSprite;
     }
 
 
