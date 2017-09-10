@@ -34,11 +34,19 @@ public class SimManager : MonoBehaviour {
 
     public bool isSimSelected;
 
-    bool hasRunDisable;
+    public bool hasRunDisable;
 
-    // Use this for initialization
+    //SIM WINDOW STUFF
+    public GameObject simWindowCanvasPrefab;
+    public GameObject simWindowCanvasObj;
+    GameObject simWindowObj;
+    public SimWindowTextManager simWindowTextManagerScript;
+
+
     void Start()
     {
+
+        simWindowCanvasPrefab = (GameObject)Resources.Load("Prefabs/SimWindowCanvas");
 
         //GET SCRIPT COMPONENTS
         simStatsScript = gameObject.GetComponent<SimStats>();
@@ -99,12 +107,15 @@ public class SimManager : MonoBehaviour {
 
         simItemText.enabled = false;
 
+        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        //Set the job of this sim 
+       // SetSimJob();
 
         //if Sim is selected then enable text and disable other sims' text
         if (isSimSelected == true)
@@ -112,28 +123,39 @@ public class SimManager : MonoBehaviour {
             //disable other sims' text
             if (!hasRunDisable)
             {
+                //only instantiate if window does not already exist
+                if (simWindowCanvasObj == null)
+                {
+                    //instantiate window
+                    simWindowCanvasObj = Instantiate(simWindowCanvasPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+                    //set simwindowtextmanager's sim object to this sim
+                    simWindowTextManagerScript = simWindowCanvasObj.GetComponentInChildren<SimWindowTextManager>();
+                    simWindowTextManagerScript.simObj = gameObject;                
+                }
                 DisableOtherSimText();
                 hasRunDisable = true;
+
             }
 
+            
 
             //update and display this sim's text
-            StatsTextUpdate();
+            //StatsTextUpdate();
 
-            simNameText.enabled = true;
+            /*simNameText.enabled = true;
             simEnergyText.enabled = true;
             simHungerText.enabled = true;
             simStatusText.enabled = true;
-            simItemText.enabled = true;
+            simItemText.enabled = true;*/
         }
-        else if (isSimSelected == false)
+       /* else if (isSimSelected == false)
         {
             simNameText.enabled = false;
             simEnergyText.enabled = false;
             simHungerText.enabled = false;
             simStatusText.enabled = false;
             simItemText.enabled = false;
-        }
+        }*/
 
 
 
@@ -145,7 +167,7 @@ public class SimManager : MonoBehaviour {
 
     }
 
-    void StatsTextUpdate()
+    /*void StatsTextUpdate()
     {
         //print("hunger from script: " + simStatsScript.hunger);
         simNameText.text = "Name: " + simStatsScript.simName;
@@ -196,7 +218,7 @@ public class SimManager : MonoBehaviour {
          {
              simItemText.text = "Item: ";
          }
-    }
+    }*/
 
     void DisableOtherSimText()
     {
@@ -215,6 +237,59 @@ public class SimManager : MonoBehaviour {
 
             }
         }
+    }
+
+    //eventually make job titles based on skill level - junior engineer, senior sales proffessional, etc.
+    void SetSimJob()
+    {
+        switch (simStatsScript.jobState)
+        {
+            case SimStats.SimJobs.Engineer:
+                simStatsScript.canEngineer = true;
+                simStatsScript.canLabor = false;
+                simStatsScript.canSales = false;
+
+                simStatsScript.simJobString = "Engineer";
+                break;
+
+            case SimStats.SimJobs.Production:
+                simStatsScript.canEngineer = false;
+                simStatsScript.canLabor = true;
+                simStatsScript.canSales = false;
+
+                simStatsScript.simJobString = "Production";
+                break;
+
+            case SimStats.SimJobs.Sales:
+                print("sales then");
+                simStatsScript.canEngineer = false;
+                simStatsScript.canLabor = false;
+                simStatsScript.canSales = true;
+
+                simStatsScript.simJobString = "Sales";
+                break;
+
+        }
+
+
+        /*if (simStatsScript.canEngineer)
+        {
+            //simStatsScript.canLabor = false;
+            //simStatsScript.canSales = false;
+            simStatsScript.simJob = "Engineer";
+        }
+        else if (simStatsScript.canLabor)
+        {
+            //simStatsScript.canEngineer = false;
+            //simStatsScript.canSales = false;
+            simStatsScript.simJob = "Production";
+        }
+        else if (simStatsScript.canSales)
+        {
+            //simStatsScript.canEngineer = false;
+            //simStatsScript.canLabor = false;
+            simStatsScript.simJob = "Sales";
+        }*/
     }
 
 

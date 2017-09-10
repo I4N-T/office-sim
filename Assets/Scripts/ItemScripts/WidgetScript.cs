@@ -12,6 +12,7 @@ public class WidgetScript : MonoBehaviour {
     //POSITION OF SIM POSSESSING WIDGET
     public Vector2 simPos;
     public GameObject sim;
+    public bool isSimObjectDeclared;
 
     //SIMAI SCRIPT
     public SimAI simAIScript;
@@ -45,9 +46,14 @@ public class WidgetScript : MonoBehaviour {
     {
         if (col.gameObject.tag == "Sim")
         {
-            sim = col.gameObject;
-            simAIScript = col.gameObject.GetComponent<SimAI>();
-            simStatsScript = col.gameObject.GetComponent<SimStats>();
+            if (!isSimObjectDeclared)
+            {
+                sim = col.gameObject;
+                simAIScript = col.gameObject.GetComponent<SimAI>();
+                simStatsScript = col.gameObject.GetComponent<SimStats>();
+                isSimObjectDeclared = true;
+            }
+            
         }
     }
 
@@ -65,10 +71,12 @@ public class WidgetScript : MonoBehaviour {
     {
         if (sim != null)
         {
-            //this prevents needtohaul sim from dropping widget upon bumping into another sim
+            //this (the if statement part after &&) prevents needtohaul sim from dropping widget upon bumping into another sim
             if (col.gameObject.tag == "Sim" && col.gameObject.GetInstanceID() == sim.GetInstanceID())
             {
-                print("this shit right here");
+                print(col.gameObject.GetInstanceID());
+                print(sim.GetInstanceID());
+                print("ay nigga its poppin off");
                 sim = null;
                 simAIScript = null;
                 simStatsScript = null;

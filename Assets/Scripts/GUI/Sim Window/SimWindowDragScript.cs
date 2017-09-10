@@ -9,7 +9,6 @@ public class SimWindowDragScript : MonoBehaviour, IBeginDragHandler, IDragHandle
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        print("shit happens");
         offsetX = transform.parent.position.x - Input.mousePosition.x;
         offsetY = transform.parent.position.y - Input.mousePosition.y;
     }

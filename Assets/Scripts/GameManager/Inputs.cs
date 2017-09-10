@@ -48,7 +48,6 @@ public class Inputs : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        print(TileBehavior.rendAngle);
         //UPDATE ISMOUSEOVERUI
         IsMouseOverUI();
 

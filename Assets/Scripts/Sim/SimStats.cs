@@ -27,13 +27,23 @@ public class SimStats : MonoBehaviour {
     public int management; /*{ get; set; }*/
 
     //SIM CAPABILITIES
-    //engineering tasks
-    public bool canResearch;
-    public bool canDesign;
+    public enum SimJobs
+    {
+        Engineer,
+        Production,
+        Sales
+    }
+    public SimJobs jobState;
+
+    public string simJobString;
+
+    //engineering tasks GET RID OF THESE BOOLEANS AND USE SIMJOBS SWITCH INSTEAD
+    public bool canEngineer;
+    
 
     //sales tasks (do sales and custmr support need to be separate?)
     public bool canSales;
-    public bool canCustomerSupport;
+    //public bool canCustomerSupport;
 
     //labor tasks (maybe have a learned skills sysstem so a sim required to learn welding before they can weld etc)
     public bool canLabor;

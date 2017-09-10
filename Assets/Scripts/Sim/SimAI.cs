@@ -117,6 +117,7 @@ public class SimAI : MonoBehaviour {
                     simFSMScript.mainState = SimFSM.MainFSM.Idle;
                     simFSMScript.taskState = SimFSM.TaskFSM.None;
                 }
+
             }
 
             //SALES TASKS
