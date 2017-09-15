@@ -86,9 +86,21 @@ public class TileBehavior : MonoBehaviour {
             rend.sortingOrder = 1;
             RotateSprite();
         }
-        else if (Inputs.placingSalesBench == true)
+        else if (Inputs.placingCoffeeMachine == true)
         {
             rend.sprite = highlightSpriteArray[3];
+            rend.sortingOrder = 1;
+            RotateSprite();
+        }
+        else if (Inputs.placingBathroomStall == true)
+        {
+            rend.sprite = highlightSpriteArray[4];
+            rend.sortingOrder = 1;
+            RotateSprite();
+        }
+        else if (Inputs.placingSalesBench == true)
+        {
+            rend.sprite = highlightSpriteArray[5];
             rend.sortingOrder = 1;
             RotateSprite();
         }

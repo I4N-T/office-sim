@@ -17,23 +17,23 @@ public class MainGUI : MonoBehaviour {
     public Button needsBtn;
     public GameObject needsPanelObj;
 
-    public GameObject fridgeBtnObj;
-    public Button fridgeBtn;
+    /*public GameObject fridgeBtnObj;
+    public Button fridgeBtn;*/
 
     //production
     public GameObject productionBtnObj;
     public Button productionBtn;
     public GameObject productionPanelObj;
     
-    public GameObject widgetBenchBtnObj;
-    public Button widgetBenchBtn;
+    /*public GameObject widgetBenchBtnObj;
+    public Button widgetBenchBtn;*/
 
     //sales
     public GameObject salesBtnObj;
     public Button salesBtn;
-
+    /*
     public GameObject salesBenchBtnObj;
-    public Button salesBenchBtn;
+    public Button salesBenchBtn;*/
     public GameObject salesPanelObj;
 
     //ZONE

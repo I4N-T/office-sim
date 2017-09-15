@@ -34,6 +34,9 @@ public class SimWindowTextManager : MonoBehaviour {
     GameObject simHungerTextObj;
     Text simHungerText;
 
+    GameObject simBladderTextObj;
+    Text simBladderText;
+
     GameObject simItemTextObj;
     Text simItemText;
 
@@ -73,13 +76,17 @@ public class SimWindowTextManager : MonoBehaviour {
         simHungerTextObj = transform.GetChild(6).gameObject;
         //simHungerTextObj = GameObject.Find("HungerText");
 
-        
+        simBladderTextObj = transform.GetChild(7).gameObject;
+        //simHungerTextObj = GameObject.Find("HungerText");
+
+
         //GET ACTUAL TEXT COMPONENTS FROM OBJECTS
         simNameText = simNameTextObj.GetComponent<Text>();
         simStatusText = simStatusTextObj.GetComponent<Text>();
         simJobText = simJobTextObj.GetComponent<Text>();
         simEnergyText = simEnergyTextObj.GetComponent<Text>();
         simHungerText = simHungerTextObj.GetComponent<Text>();
+        simBladderText = simBladderTextObj.GetComponent<Text>();
         simItemText = simItemTextObj.GetComponent<Text>();
 
 
@@ -88,63 +95,16 @@ public class SimWindowTextManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        //CheckSimSelected();
-        /*
-        //if Sim is selected then enable text and disable other sims' text
-        if (isSimSelected == true)
-        {
-            //disable other sims' text
-            if (!hasRunDisable)
-            {
-                DisableOtherSimText();
-                hasRunDisable = true;
-            }
-
-            print("ran it");
-            
-
-
-            /*simNameText.enabled = true;
-            simEnergyText.enabled = true;
-            simHungerText.enabled = true;
-            simStatusText.enabled = true;
-            simItemText.enabled = true;
-        }
-        else if (isSimSelected == false)
-        {
-            /*simNameText.enabled = false;
-            simEnergyText.enabled = false;
-            simHungerText.enabled = false;
-            simStatusText.enabled = false;
-            simItemText.enabled = false;
-        }
-        */
         //update and display this sim's text
         StatsTextUpdate();
 
-
-
-
-        if (Input.GetMouseButtonUp(1))
+       /* if (Input.GetMouseButtonUp(1))
         {
             isSimSelected = false;
 
-        }
+        }*/
 
-    }
-
-    //??????????????????????????????????????????????????????????????????
-    /*void CheckSimSelected()
-    {
-        foreach (GameObject sim in GameStats.simList)
-        {
-            simManagerScript = sim.GetComponent<SimManager>();
-            if (simManagerScript.isSimSelected)
-            {
-                simObj = sim;
-            }
-        }
-    }*/
+    }   
 
     void StatsTextUpdate()
     {
@@ -154,6 +114,7 @@ public class SimWindowTextManager : MonoBehaviour {
 
         simEnergyText.text = "Energy: " + simStatsScript.energy + "/" + "100";
         simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
+        simBladderText.text = "Bladder: " + simStatsScript.bladder + "/" + "100";
 
 
         if (simFSMScript.mainState == SimFSM.MainFSM.Idle)
@@ -166,6 +127,12 @@ public class SimWindowTextManager : MonoBehaviour {
             {
                 simStatusText.text = "getting food";
             }
+
+            if (simFSMScript.taskState == SimFSM.TaskFSM.GettingCoffee)
+            {
+                simStatusText.text = "getting coffee";
+            }
+
             if (simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget && simAIScript.needToHaul == false)
             {
                 simStatusText.text = "Making Widget";

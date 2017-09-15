@@ -15,6 +15,12 @@ public class GameStats : MonoBehaviour {
     public static bool hasFridge;
     public static int countFridge;
 
+    public static bool hasCoffeeMachine;
+    public static int countCoffeeMachine;
+
+    public static bool hasBathroomStall;
+    public static int countBathroomStall;
+
     public static bool hasWidgetBench;
     public static int countWidgetBench;
 
@@ -27,6 +33,8 @@ public class GameStats : MonoBehaviour {
 
     //ITEM/STRUCTURE ARRAYS -- used, for example, to get item position in the SimAI script
     public static List<GameObject> fridgeList = new List<GameObject>();
+    public static List<GameObject> coffeeMachineList = new List<GameObject>();
+    public static List<GameObject> bathroomStallList = new List<GameObject>();
     public static List<GameObject> widgetBenchList = new List<GameObject>();
     public static List<GameObject> salesBenchList = new List<GameObject>();
 
@@ -44,6 +52,8 @@ public class GameStats : MonoBehaviour {
     void Awake()
     {
         countFridge = -1;
+        countCoffeeMachine = -1;
+        countBathroomStall = -1;
         countWidgetBench = -1;
         countSalesBench = -1;
 
@@ -59,6 +69,9 @@ public class GameStats : MonoBehaviour {
         stone = 100;
 
         hasFridge = false;
+        hasCoffeeMachine = false;
+        hasBathroomStall = false;
+
         hasWidgetBench = false;
         hasSalesBench = false;
 
@@ -70,8 +83,14 @@ public class GameStats : MonoBehaviour {
 	
     void Update()
     {
- 
-        
+        //JUST FOR TESTING
+        foreach (GameObject sim in simList)
+        {
+            SimStats simstatsscript = sim.GetComponent<SimStats>();
+            print(simstatsscript.simName);
+        }
+        //ABOVE IS JUST FOR TESTING
+
         for (var i = fridgeList.Count - 1; i > -1; i--)
         {
             if (fridgeList[i] == null)
@@ -86,6 +105,33 @@ public class GameStats : MonoBehaviour {
             hasFridge = false;
         }
 
+        for (var i = coffeeMachineList.Count - 1; i > -1; i--)
+        {
+            if (coffeeMachineList[i] == null)
+            {
+                coffeeMachineList.RemoveAt(i);
+                countCoffeeMachine -= 1;
+            }
+
+        }
+        if (countCoffeeMachine < 0)
+        {
+            hasCoffeeMachine = false;
+        }
+
+        for (var i = bathroomStallList.Count - 1; i > -1; i--)
+        {
+            if (bathroomStallList[i] == null)
+            {
+                bathroomStallList.RemoveAt(i);
+                countBathroomStall -= 1;
+            }
+
+        }
+        if (countBathroomStall < 0)
+        {
+            hasFridge = false;
+        }
 
         for (var i = widgetBenchList.Count - 1; i > -1; i--)
         {

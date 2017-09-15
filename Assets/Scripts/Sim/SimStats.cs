@@ -56,7 +56,7 @@ public class SimStats : MonoBehaviour {
 
     //NEEDS
     [Range(0, 100)] public int energy;
-    [Range(0, 100)] public int bathroom;
+    [Range(0, 100)] public int bladder;
     [Range(0, 100)] public int hunger; 
     [Range(0, 100)] public int stress;
 

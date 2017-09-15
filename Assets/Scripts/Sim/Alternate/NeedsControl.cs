@@ -8,10 +8,10 @@ public class NeedsControl : MonoBehaviour {
     void Start()
     {
         simStatsScript = gameObject.GetComponent<SimStats>();
-
         //NEED DEPLETIONS
         StartCoroutine(EnergyDeplete(5f));
         StartCoroutine(HungerDeplete(3f));
+        StartCoroutine(BladderDeplete(2.25f));
     }
 
     //NEED METERS DEPLETE PERIODICALLY
@@ -29,10 +29,19 @@ public class NeedsControl : MonoBehaviour {
         for (;;)
         {
             simStatsScript.hunger -= 1;
-
             simStatsScript.hunger = Mathf.Clamp(simStatsScript.hunger, 0, 100);
 
-            //simManagerScript.simStatsScript.hunger -= 1;
+            yield return new WaitForSeconds(waitTime);
+        }
+    }
+
+    IEnumerator BladderDeplete(float waitTime)
+    {
+        for (;;)
+        {
+            simStatsScript.bladder -= 1;
+            simStatsScript.bladder = Mathf.Clamp(simStatsScript.bladder, 0, 100);
+
             yield return new WaitForSeconds(waitTime);
         }
     }

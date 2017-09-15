@@ -4,7 +4,6 @@ using System.Collections;
 
 public class FridgePlacementScript : MonoBehaviour {
 
-    
     public Button fridgeBtn;
 
     void Awake()

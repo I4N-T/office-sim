@@ -62,7 +62,7 @@ public class SimManager : MonoBehaviour {
         //otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
 
         //GET CANVAS OBJECT
-        canvasObj = transform.GetChild(0).gameObject;
+        /*canvasObj = transform.GetChild(0).gameObject;
 
         //GET TEXT OBJECT COMPONENTS
         simNameTextObj = transform.GetChild(0).GetChild(0).gameObject;
@@ -78,7 +78,7 @@ public class SimManager : MonoBehaviour {
         //simHungerTextObj = GameObject.Find("HungerText");
 
         simItemTextObj = transform.GetChild(0).GetChild(4).gameObject;
-
+        
 
         //GET ACTUAL CANVAS FROM CANVAS OBJECT
         canvas = canvasObj.GetComponent<Canvas>();
@@ -92,30 +92,32 @@ public class SimManager : MonoBehaviour {
         simStatusText = simStatusTextObj.GetComponent<Text>();
         simEnergyText = simEnergyTextObj.GetComponent<Text>();
         simHungerText = simHungerTextObj.GetComponent<Text>();
-        simItemText = simItemTextObj.GetComponent<Text>();
+        simItemText = simItemTextObj.GetComponent<Text>();*/
 
         //INITIALIZATION OF NEEDS
         simStatsScript.energy = 100;
         simStatsScript.hunger = 100;
+        simStatsScript.bladder = 100;
 
-        simNameText.enabled = false;
+        /*simNameText.enabled = false;
         //simNameText.text = "Name: " + simStatsScript.simName;
 
         simEnergyText.enabled = false;
         simHungerText.enabled = false;
         //simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
 
-        simItemText.enabled = false;
+        simItemText.enabled = false;*/
 
-        
+        //Set the job of this sim 
+        SetSimJob();
+
+
 
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //Set the job of this sim 
-       // SetSimJob();
+        
 
         //if Sim is selected then enable text and disable other sims' text
         if (isSimSelected == true)

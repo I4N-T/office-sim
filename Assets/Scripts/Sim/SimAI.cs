@@ -27,8 +27,8 @@ public class SimAI : MonoBehaviour {
     public bool isWidgetBenchInProgress;
     public bool needToHaul;
 
-    //ARRAY TO HOLD ALL OTHER SIMS TO KEEP TRACK OF USE INTERFERENCES
-    public GameObject[] otherSimArray;
+    //ARRAY TO HOLD ALL OTHER SIMS TO KEEP TRACK OF USE INTERFERENCES (DEPRECATED - NOW USE SIMLIST)
+    //public GameObject[] otherSimArray;
 
     //SIM STATS SCRIPT INSTANCE
     public SimStats simStatsScript;
@@ -51,7 +51,7 @@ public class SimAI : MonoBehaviour {
         //simManagerScript = gameObject.GetComponent<SimManager>();
 
         //GET OTHER SIM OBJECTS ARRAY
-        otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
+        //otherSimArray = GameObject.FindGameObjectsWithTag("Sim");
 
 
 
@@ -69,17 +69,48 @@ public class SimAI : MonoBehaviour {
         simStatsScript.simPos = gameObject.transform.position;
     }
 
-    void Update() { 
+    void Update() {
 
         //REPLENISH NEEDS IF POSSIBLE
 
+        //BATHROOM
+        if (simStatsScript.bladder < 25)
+        {
+            if (GameStats.hasBathroomStall)
+            {
+                simFSMScript.mainState = SimFSM.MainFSM.Task;
+                simFSMScript.taskState = SimFSM.TaskFSM.UsingBathroom;
+            }
+            else if (!GameStats.hasBathroomStall)
+            {
+                //if (simStatsScript.bladder < 1) then piss on the floor and get fired or something
+                simFSMScript.mainState = SimFSM.MainFSM.Idle;
+            }
+
+        }
+
         //ENERGY
+        if (simStatsScript.energy < 30)
+        {
+            //check for food
+            if (GameStats.hasCoffeeMachine)
+            {
+                simFSMScript.mainState = SimFSM.MainFSM.Task;
+                simFSMScript.taskState = SimFSM.TaskFSM.GettingCoffee;
+            }
+            else if (!GameStats.hasCoffeeMachine)
+            {
+                //change this to set off notification that sim is tired
+                simFSMScript.mainState = SimFSM.MainFSM.Idle;
+            }
+
+        }
 
         //HUNGER
         if (simStatsScript.hunger < 40)
         {
             //check for food
-            if (GameStats.hasFridge == true)
+            if (GameStats.hasFridge)
             {
                 simFSMScript.mainState = SimFSM.MainFSM.Task;
                 simFSMScript.taskState = SimFSM.TaskFSM.GettingFood;
@@ -153,14 +184,11 @@ public class SimAI : MonoBehaviour {
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //void MakeDecision(){}
 
 
     //IF IN TRANSIT ----------------------------------------------------------------------------------------------------------------
     public void GoToward(Vector2 targetPos)
     {
-        //rb2D.MovePosition(targetPos);
-        //Vector2 simPos = gameObject.transform.position;
         transform.position = Vector3.MoveTowards(new Vector3(simStatsScript.simPos.x, simStatsScript.simPos.y, -1f), new Vector3(targetPos.x, targetPos.y, -1f), moveSpeed * Time.deltaTime);
     }
 
@@ -191,6 +219,62 @@ public class SimAI : MonoBehaviour {
 
         }
     }
+
+    public void GetTargetPosCoffeeMachine()
+    {
+        CoffeeScript coffeeMachineScript;
+        //Vector2 simPos = gameObject.transform.position;
+        Vector2 testPos = new Vector2(0, 0);
+        float mag1 = 0;
+        float mag2 = 9999;
+
+        //for each coffee machine in coffeeMachineList, compare positions to determine which is closest
+        foreach (GameObject coffeeMachine in GameStats.coffeeMachineList)
+        {
+            //the null check is to prevent a NullReferenceException error upon deleting fridge
+            if (coffeeMachine != null)
+            {
+                coffeeMachineScript = coffeeMachine.GetComponent<CoffeeScript>();
+                mag1 = Vector2.Distance(simStatsScript.simPos, coffeeMachineScript.coffeeMachinePos);
+                if (mag1 < mag2)
+                {
+                    mag2 = mag1;
+                    targetPos = coffeeMachineScript.coffeeMachinePos;
+                    simStatsScript.objectInUse = coffeeMachine;
+                }
+            }
+
+
+        }
+    }
+    /* 
+    public void GetTargetPosBathroomStall()
+    {
+        BathroomStallScript bathroomStallScript;
+        //Vector2 simPos = gameObject.transform.position;
+        Vector2 testPos = new Vector2(0, 0);
+        float mag1 = 0;
+        float mag2 = 9999;
+
+        //for each bathroom stall in bathroomStallList, compare positions to determine which is closest
+        foreach (GameObject bathroomStall in GameStats.bathroomStallList)
+        {
+            //the null check is to prevent a NullReferenceException error upon deleting bathroomStall
+            if (bathroomStall != null)
+            {
+                bathroomStallScript = bathroomStall.GetComponent<BathroomStallScript>();
+                mag1 = Vector2.Distance(simStatsScript.simPos, bathroomStallScript.bathroomStallPos);
+                if (mag1 < mag2)
+                {
+                    mag2 = mag1;
+                    targetPos = bathroomStallScript.bathroomStallPos;
+                    simStatsScript.objectInUse = bathroomStall;
+                }
+            }
+
+
+        }
+    }*/
 
     public void GetTargetPosWidgetBench()
     {
@@ -334,7 +418,6 @@ public class SimAI : MonoBehaviour {
                 //if this sim is using this bench already, set target so he stays
                 if (objID == salesBenchScript.gameObject.GetInstanceID())
                 {
-                    print("runningRRR");
                     targetPos = salesBenchScript.salesBenchPos;
 
                     return;
@@ -387,7 +470,7 @@ public class SimAI : MonoBehaviour {
 
         if (GameStats.countWidgetBench >= 0)
         {
-            foreach (GameObject otherSimObj in otherSimArray)
+            foreach (GameObject otherSimObj in GameStats.simList)
             {
                 if (otherSimObj != gameObject)
                 {
@@ -423,7 +506,7 @@ public class SimAI : MonoBehaviour {
 
         if (GameStats.countSalesBench >= 0)
         {
-            foreach (GameObject otherSimObj in otherSimArray)
+            foreach (GameObject otherSimObj in GameStats.simList)
             {
                 if (otherSimObj != gameObject)
                 {
@@ -474,6 +557,24 @@ public class SimAI : MonoBehaviour {
                 simFSMScript.mainState = SimFSM.MainFSM.Idle;
             }
         }
+        //COFFEE ADDS 40 TO ENERGY
+        if (col.gameObject.tag == "Coffee")
+        {
+            if (simFSMScript.mainState == SimFSM.MainFSM.Task && simFSMScript.taskState == SimFSM.TaskFSM.GettingCoffee)
+            {
+                int energy = simStatsScript.energy;
+                energy += 40;
+                //ENSURE MAX ENERGY IS 100 and ACTUALLY SET THE NEW ENERGY VALUE 
+                simStatsScript.energy = Mathf.Clamp(energy, 0, 100);
+                              
+
+                //TASK COMPLETE
+                simStatsScript.objectInUse = null;
+                simFSMScript.taskState = SimFSM.TaskFSM.None;
+                simFSMScript.mainState = SimFSM.MainFSM.Idle;
+            }
+        }
+
     }
 
     void OnTriggerEnter2D(Collider2D col)

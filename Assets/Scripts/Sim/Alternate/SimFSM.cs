@@ -20,6 +20,8 @@ public class SimFSM : MonoBehaviour {
     {
         None,
         GettingFood,
+        GettingCoffee,
+        UsingBathroom,
         MakingWidget,
         Sales
         
@@ -69,6 +71,17 @@ public class SimFSM : MonoBehaviour {
             case TaskFSM.GettingFood:
                 simAIScript.GetTargetPosFridge();
                 simAIScript.GoToward(simAIScript.targetPos);
+                break;
+
+            case TaskFSM.GettingCoffee:
+                print("getting");
+                simAIScript.GetTargetPosCoffeeMachine();
+                simAIScript.GoToward(simAIScript.targetPos);
+                break;
+
+            case TaskFSM.UsingBathroom:
+                //simAIScript.GetTargetPosBathroomStall();
+                //simAIScript.GoToward(simAIScript.targetPos);
                 break;
 
             case TaskFSM.MakingWidget:

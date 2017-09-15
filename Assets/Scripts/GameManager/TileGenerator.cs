@@ -8,7 +8,6 @@ public class TileGenerator : MonoBehaviour {
     public Transform tileHolderTransform;
     GameObject tileForList;
 
-
 	void Start ()
     {
         Generate(squareSize);
@@ -27,7 +26,6 @@ public class TileGenerator : MonoBehaviour {
             }
         }
     }
-
 
 
 }

@@ -19,6 +19,8 @@ public class Inputs : MonoBehaviour {
     //bools for placement
     public static bool placingWidgetBench = false;
     public static bool placingFridge = false;
+    public static bool placingCoffeeMachine = false;
+    public static bool placingBathroomStall = false;
     public static bool placingSalesBench = false;
     //bool isMouseOverUI;
 
@@ -36,6 +38,8 @@ public class Inputs : MonoBehaviour {
     //BUILD STRUCTURES OBJECTS
     public GameObject widgetBenchObject;
     public GameObject fridgeObject;
+    public GameObject coffeeMachineObject;
+    public GameObject bathroomStallObject;
     public GameObject salesBenchObject;
 
 	// Use this for initialization
@@ -67,6 +71,8 @@ public class Inputs : MonoBehaviour {
         {
             placingWidgetBench = false;
             placingFridge = false;
+            placingCoffeeMachine = false;
+            placingBathroomStall = false;
             placingSalesBench = false;
             //placingwhatever = false;
 
@@ -118,6 +124,28 @@ public class Inputs : MonoBehaviour {
                 GameStats.dollars -= 200;
                 Instantiate(fridgeObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
                 placingFridge = false;
+            }
+        }
+
+        //coffee machine
+        if (placingCoffeeMachine == true && IsMouseOverUI() == false)
+        {
+            if (Input.GetMouseButtonUp(0) && GUIUtility.hotControl == 0)
+            {
+                GameStats.dollars -= 100;
+                Instantiate(coffeeMachineObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
+                placingCoffeeMachine = false;
+            }
+        }
+
+        //bathroom stall
+        if (placingBathroomStall == true && IsMouseOverUI() == false)
+        {
+            if (Input.GetMouseButtonUp(0) && GUIUtility.hotControl == 0)
+            {
+                GameStats.dollars -= 300;
+                Instantiate(bathroomStallObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
+                placingBathroomStall = false;
             }
         }
 
