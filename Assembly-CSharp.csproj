@@ -47,8 +47,10 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraScript.cs" />
      <Compile Include="Assets\Scripts\CancelCursorScript.cs" />
+     <Compile Include="Assets\Scripts\GUI\BathroomStallPlacementScript.cs" />
      <Compile Include="Assets\Scripts\GUI\CoffeeMachinePlacementScript.cs" />
      <Compile Include="Assets\Scripts\GUI\DeleteScript.cs" />
+     <Compile Include="Assets\Scripts\GUI\DraftingDeskPlacementScript.cs" />
      <Compile Include="Assets\Scripts\GUI\FridgePlacementScript.cs" />
      <Compile Include="Assets\Scripts\GUI\SalesBenchPlacement.cs" />
      <Compile Include="Assets\Scripts\GUI\Sim Window\CloseButtonScript.cs" />
@@ -66,9 +68,9 @@
      <Compile Include="Assets\Scripts\ItemScripts\Alternate\AltWidgetBenchChildScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\Alternate\AltWidgetBenchScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\Alternate\AltWidgetScript.cs" />
-     <Compile Include="Assets\Scripts\ItemScripts\BathroomStallPlacementScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\BathroomStallScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\CoffeeScript.cs" />
+     <Compile Include="Assets\Scripts\ItemScripts\DraftingDeskScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\FridgeScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\SalesBenchScript.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\WidgetBenchChildScript.cs" />

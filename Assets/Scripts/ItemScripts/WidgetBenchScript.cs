@@ -122,18 +122,22 @@ public class WidgetBenchScript : MonoBehaviour {
             //make sure widget instantiates with the proper offset in order to allow the collider to overlap with sim collider
             if (gameObject.transform.eulerAngles == new Vector3(0,0, 0))
             {
+                print(1);
                 widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x, widgetBenchPos.y - .2f, -1), gameObject.transform.rotation) as GameObject;
             }
             else if (gameObject.transform.eulerAngles == new Vector3(0, 0, 90))
             {
+                print(2);
                 widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x + .2f, widgetBenchPos.y, -1), gameObject.transform.rotation) as GameObject;
             }
             else if (gameObject.transform.eulerAngles == new Vector3(0, 0, 180))
             {
+                print(3);
                 widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x, widgetBenchPos.y + .2f, -1), gameObject.transform.rotation) as GameObject;
             }
-            else if (gameObject.transform.eulerAngles == new Vector3(0, 0, -90))
+            else if (gameObject.transform.eulerAngles == new Vector3(0, 0, 270))
             {
+                print(4);
                 widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x - .2f, widgetBenchPos.y, -1), gameObject.transform.rotation) as GameObject;
             }
 

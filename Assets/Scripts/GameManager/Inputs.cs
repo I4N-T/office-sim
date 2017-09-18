@@ -14,6 +14,8 @@ public class Inputs : MonoBehaviour {
     //RECTTRANSFORMS FOR KEEPING MOUSE CLICK FROM GOING THROUGH BUTTONS; USEFUL FOR OBJECT PLACEMENT
     public RectTransform needsPanelRect;
     public RectTransform productionPanelRect;
+    public RectTransform salesPanelRect;
+    public RectTransform engineeringPanelRect;
     public GameObject buttonCanv;
 
     //bools for placement
@@ -22,6 +24,7 @@ public class Inputs : MonoBehaviour {
     public static bool placingCoffeeMachine = false;
     public static bool placingBathroomStall = false;
     public static bool placingSalesBench = false;
+    public static bool placingDraftingDesk = false;
     //bool isMouseOverUI;
 
     //BOOLS FOR ZONE DRAWING
@@ -41,6 +44,7 @@ public class Inputs : MonoBehaviour {
     public GameObject coffeeMachineObject;
     public GameObject bathroomStallObject;
     public GameObject salesBenchObject;
+    public GameObject draftingDeskObject;
 
 	// Use this for initialization
 	void Start () {
@@ -74,6 +78,7 @@ public class Inputs : MonoBehaviour {
             placingCoffeeMachine = false;
             placingBathroomStall = false;
             placingSalesBench = false;
+            placingDraftingDesk = false;
             //placingwhatever = false;
 
             if (drawingZoneStockpile && firstCornerDone)
@@ -162,6 +167,19 @@ public class Inputs : MonoBehaviour {
             }
         }
 
+        //drafting desk
+        if (placingDraftingDesk == true && IsMouseOverUI() == false)
+        {
+
+            if (Input.GetMouseButtonUp(0) && GUIUtility.hotControl == 0)
+            {
+                GameStats.dollars -= 300;
+                Instantiate(draftingDeskObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
+                placingDraftingDesk = false;
+
+            }
+        }
+
         //STOCKPILE ZONE
         if (drawingZoneStockpile == true && IsMouseOverUI() == false)
         {
@@ -198,7 +216,8 @@ public class Inputs : MonoBehaviour {
 
     bool IsMouseOverUI()
     {
-        if (RectTransformUtility.RectangleContainsScreenPoint(productionPanelRect, Input.mousePosition) || RectTransformUtility.RectangleContainsScreenPoint(needsPanelRect, Input.mousePosition))
+        if (RectTransformUtility.RectangleContainsScreenPoint(productionPanelRect, Input.mousePosition) || RectTransformUtility.RectangleContainsScreenPoint(needsPanelRect, Input.mousePosition) || 
+            RectTransformUtility.RectangleContainsScreenPoint(salesPanelRect, Input.mousePosition) || RectTransformUtility.RectangleContainsScreenPoint(engineeringPanelRect, Input.mousePosition))
         {
             return true;
         }

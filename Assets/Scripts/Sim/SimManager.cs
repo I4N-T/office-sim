@@ -263,7 +263,6 @@ public class SimManager : MonoBehaviour {
                 break;
 
             case SimStats.SimJobs.Sales:
-                print("sales then");
                 simStatsScript.canEngineer = false;
                 simStatsScript.canLabor = false;
                 simStatsScript.canSales = true;

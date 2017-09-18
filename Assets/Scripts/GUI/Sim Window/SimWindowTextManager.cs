@@ -133,6 +133,11 @@ public class SimWindowTextManager : MonoBehaviour {
                 simStatusText.text = "getting coffee";
             }
 
+            if (simFSMScript.taskState == SimFSM.TaskFSM.UsingBathroom)
+            {
+                simStatusText.text = "leaking";
+            }
+
             if (simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget && simAIScript.needToHaul == false)
             {
                 simStatusText.text = "Making Widget";

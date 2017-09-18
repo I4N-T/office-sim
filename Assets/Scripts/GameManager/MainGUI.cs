@@ -36,6 +36,11 @@ public class MainGUI : MonoBehaviour {
     public Button salesBenchBtn;*/
     public GameObject salesPanelObj;
 
+    //engineering
+    public GameObject engineeringBtnObj;
+    public Button engineeringBtn;
+    public GameObject engineeringPanelObj;
+
     //ZONE
     public GameObject zoneBtnObj;
     public Button zoneBtn;
@@ -59,6 +64,7 @@ public class MainGUI : MonoBehaviour {
         needsBtn.onClick.AddListener(NeedsBtnAction);
         productionBtn.onClick.AddListener(ProductionBtnAction);
         salesBtn.onClick.AddListener(SalesBtnAction);
+        engineeringBtn.onClick.AddListener(EngineeringBtnAction);
         //widgetBenchBtn.onClick.AddListener(WidgetBenchBtnAction);
 
         zoneBtn.onClick.AddListener(ZoneBtnAction);
@@ -69,12 +75,16 @@ public class MainGUI : MonoBehaviour {
         //SET CERTAIN BUTTONS INACTIVE
         needsBtnObj.SetActive(false);
         needsPanelObj.SetActive(false);
+        
 
         productionBtnObj.SetActive(false);
         productionPanelObj.SetActive(false);
 
         salesBtnObj.SetActive(false);
         salesPanelObj.SetActive(false);
+
+        engineeringBtnObj.SetActive(false);
+        engineeringPanelObj.SetActive(false);
 
         stockpileBtnObj.SetActive(false);
 
@@ -101,9 +111,13 @@ public class MainGUI : MonoBehaviour {
             needsBtnObj.SetActive(false);
             productionBtnObj.SetActive(false);
             salesBtnObj.SetActive(false);
+            engineeringBtnObj.SetActive(false);
+
             needsPanelObj.SetActive(false);
             productionPanelObj.SetActive(false);
             salesPanelObj.SetActive(false);
+            engineeringPanelObj.SetActive(false);
+
             stockpileBtnObj.SetActive(false);
         }
 
@@ -117,6 +131,7 @@ public class MainGUI : MonoBehaviour {
             needsBtnObj.SetActive(true);
             productionBtnObj.SetActive(true);
             salesBtnObj.SetActive(true);
+            engineeringBtnObj.SetActive(true);
 
             stockpileBtnObj.SetActive(false);
         }
@@ -125,6 +140,7 @@ public class MainGUI : MonoBehaviour {
             needsBtnObj.SetActive(false);
             productionBtnObj.SetActive(false);
             salesBtnObj.SetActive(false);
+            engineeringBtnObj.SetActive(false);
 
             needsPanelObj.SetActive(false);
             productionPanelObj.SetActive(false);
@@ -140,6 +156,7 @@ public class MainGUI : MonoBehaviour {
 
             productionPanelObj.SetActive(false);
             salesPanelObj.SetActive(false);
+            engineeringPanelObj.SetActive(false);
         }
         else if (needsPanelObj.activeSelf)
         {
@@ -157,6 +174,7 @@ public class MainGUI : MonoBehaviour {
 
             needsPanelObj.SetActive(false);
             salesPanelObj.SetActive(false);
+            engineeringPanelObj.SetActive(false);
         }
         else if (productionPanelObj.activeSelf)
         {
@@ -173,10 +191,28 @@ public class MainGUI : MonoBehaviour {
 
             needsPanelObj.SetActive(false);
             productionPanelObj.SetActive(false);
+            engineeringPanelObj.SetActive(false);
         }
         else if (salesPanelObj.activeSelf)
         {
             salesPanelObj.SetActive(false);
+
+        }
+    }
+
+    void EngineeringBtnAction()
+    {
+        if (!engineeringPanelObj.activeSelf)
+        {
+            engineeringPanelObj.SetActive(true);
+
+            salesPanelObj.SetActive(false);
+            needsPanelObj.SetActive(false);
+            productionPanelObj.SetActive(false);
+        }
+        else if (salesPanelObj.activeSelf)
+        {
+            engineeringPanelObj.SetActive(false);
 
         }
     }
@@ -190,9 +226,11 @@ public class MainGUI : MonoBehaviour {
             needsBtnObj.SetActive(false);
             productionBtnObj.SetActive(false);
             salesBtnObj.SetActive(false);
+            engineeringBtnObj.SetActive(false);
             needsPanelObj.SetActive(false);
             productionPanelObj.SetActive(false);
             salesPanelObj.SetActive(false);
+            engineeringPanelObj.SetActive(false);
         }
         else if (stockpileBtnObj.activeSelf)
         {
@@ -206,9 +244,11 @@ public class MainGUI : MonoBehaviour {
         needsBtnObj.SetActive(false);
         productionBtnObj.SetActive(false);
         salesBtnObj.SetActive(false);
+        engineeringBtnObj.SetActive(false);
         needsPanelObj.SetActive(false);
         productionPanelObj.SetActive(false);
         salesPanelObj.SetActive(false);
+        engineeringPanelObj.SetActive(false);
         stockpileBtnObj.SetActive(false);
 
         //instantiate red X cursor

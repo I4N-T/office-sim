@@ -15,10 +15,10 @@ public class SimAI : MonoBehaviour {
 
     public Vector2 targetPos;
     public bool isGettingFood;
+    public bool isFinishedBathroom;
 
     //ITEM STUFF
     //GENERAL
-    //public bool isHolding;
 
     //FRIDGE 
 
@@ -43,7 +43,6 @@ public class SimAI : MonoBehaviour {
     void Start()
     {
         
-
         isIdle = true;
 
         simFSMScript = gameObject.GetComponent<SimFSM>();
@@ -76,21 +75,29 @@ public class SimAI : MonoBehaviour {
         //BATHROOM
         if (simStatsScript.bladder < 25)
         {
-            if (GameStats.hasBathroomStall)
+            if (IsItemAvailable(GameStats.countBathroomStall, SimFSM.TaskFSM.UsingBathroom, "BathroomStall"))
             {
-                simFSMScript.mainState = SimFSM.MainFSM.Task;
-                simFSMScript.taskState = SimFSM.TaskFSM.UsingBathroom;
+                if (GameStats.hasBathroomStall)
+                {
+                    simFSMScript.mainState = SimFSM.MainFSM.Task;
+                    simFSMScript.taskState = SimFSM.TaskFSM.UsingBathroom;
+                }
+                else if (!GameStats.hasBathroomStall)
+                {
+                    //if (simStatsScript.bladder < 1) then piss on the floor and get fired or something
+                    simFSMScript.mainState = SimFSM.MainFSM.Idle;
+                    simFSMScript.taskState = SimFSM.TaskFSM.None;
+                }
             }
-            else if (!GameStats.hasBathroomStall)
+            else if (!IsItemAvailable(GameStats.countBathroomStall, SimFSM.TaskFSM.UsingBathroom, "BathroomStall"))
             {
-                //if (simStatsScript.bladder < 1) then piss on the floor and get fired or something
                 simFSMScript.mainState = SimFSM.MainFSM.Idle;
+                simFSMScript.taskState = SimFSM.TaskFSM.None;
             }
-
         }
 
         //ENERGY
-        if (simStatsScript.energy < 30)
+        if (simStatsScript.energy < 30 && (simFSMScript.taskState != SimFSM.TaskFSM.UsingBathroom))
         {
             //check for food
             if (GameStats.hasCoffeeMachine)
@@ -102,12 +109,13 @@ public class SimAI : MonoBehaviour {
             {
                 //change this to set off notification that sim is tired
                 simFSMScript.mainState = SimFSM.MainFSM.Idle;
+                simFSMScript.taskState = SimFSM.TaskFSM.None;
             }
 
         }
 
         //HUNGER
-        if (simStatsScript.hunger < 40)
+        if (simStatsScript.hunger < 40 && (simFSMScript.taskState != SimFSM.TaskFSM.UsingBathroom))
         {
             //check for food
             if (GameStats.hasFridge)
@@ -119,12 +127,13 @@ public class SimAI : MonoBehaviour {
             {
                 //change this to set off notification that sim is starving
                 simFSMScript.mainState = SimFSM.MainFSM.Idle;
+                simFSMScript.taskState = SimFSM.TaskFSM.None;
             }
 
         }
 
         //IF NEEDS ARE MET THEN WORK ON HIGHEST PRIORITY TASK POSSIBLE (refactor this)
-        else if (simStatsScript.hunger >= 40 && simStatsScript.energy >= 30)
+        else if (simStatsScript.hunger >= 40 && simStatsScript.energy >= 30 && simStatsScript.bladder >= 25 && (simFSMScript.taskState != SimFSM.TaskFSM.UsingBathroom)) //the last conditional is a temporary fix
         {
             //LABOR TASKS (Production)
             if (simStatsScript.canLabor)
@@ -177,6 +186,34 @@ public class SimAI : MonoBehaviour {
                         simFSMScript.taskState = SimFSM.TaskFSM.None;
                     }
                     
+                }
+                /*else if (!GameStats.hasSalesBench)
+                {
+                    simFSMScript.mainState = SimFSM.MainFSM.Idle;
+                    simFSMScript.taskState = SimFSM.TaskFSM.None;
+                }*/
+            }
+
+            if (simStatsScript.canEngineer)
+            {
+                if (GameStats.hasDraftingDesk)
+                {
+                    //if unnoccupied drafting desk is available
+                    if (IsItemAvailable(GameStats.countDraftingDesk, SimFSM.TaskFSM.Drafting, "DraftingDesk"))
+                    {
+                        simFSMScript.mainState = SimFSM.MainFSM.Task;
+                        simFSMScript.taskState = SimFSM.TaskFSM.Drafting;
+                    }
+                    else if (!IsItemAvailable(GameStats.countDraftingDesk, SimFSM.TaskFSM.Drafting, "DraftingDesk"))
+                    {
+                        simFSMScript.mainState = SimFSM.MainFSM.Idle;
+                        simFSMScript.taskState = SimFSM.TaskFSM.None;
+                    }
+                }
+                else if (!GameStats.hasDraftingDesk)
+                {
+                    simFSMScript.mainState = SimFSM.MainFSM.Idle;
+                    simFSMScript.taskState = SimFSM.TaskFSM.None;
                 }
             }
 
@@ -247,8 +284,8 @@ public class SimAI : MonoBehaviour {
 
         }
     }
-    /* 
-    public void GetTargetPosBathroomStall()
+     
+    /*public void GetTargetPosBathroomStall()
     {
         BathroomStallScript bathroomStallScript;
         //Vector2 simPos = gameObject.transform.position;
@@ -275,6 +312,56 @@ public class SimAI : MonoBehaviour {
 
         }
     }*/
+
+    public void GetTargetPosBathroomStall()
+    {
+        BathroomStallScript bathroomStallScript;
+        //Vector2 simPos = gameObject.transform.position;
+        float mag1 = 0;
+        float mag2 = 9999;
+
+        //for each bathroomStall in bathroomStallList, compare positions to determine which is closest
+        foreach (GameObject bathroomStall in GameStats.bathroomStallList)
+        {
+            //the null check is to prevent a NullReferenceException error upon deleting stall
+            if (bathroomStall != null)
+            {
+                bathroomStallScript = bathroomStall.GetComponent<BathroomStallScript>();
+                //if this sim is using this stall already, set target so he stays
+                if (objID == bathroomStallScript.gameObject.GetInstanceID())
+                {
+                    if (!isFinishedBathroom)
+                    {
+                        targetPos = bathroomStallScript.bathroomStallPos;
+                    }
+                    //this makes sim go toward target OUTSIDE the bathroom stall, so he gets out of the way
+                    else if (isFinishedBathroom)
+                    {
+                        targetPos = bathroomStall.transform.GetChild(0).position;
+                    }
+                    
+
+                    return;
+                }
+
+                //only get position of benches not being used
+                if (!bathroomStallScript.inProgress)
+                {
+                    mag1 = Vector2.Distance(simStatsScript.simPos, bathroomStallScript.bathroomStallPos);
+                    if (mag1 < mag2)
+                    {
+                        mag2 = mag1;
+                        targetPos = bathroomStallScript.bathroomStallPos;
+                        /*simStatsScript.objectInUse = salesBench;
+                        objID = salesBench.GetInstanceID();*/
+                    }
+                }
+
+            }
+
+
+        }
+    }
 
     public void GetTargetPosWidgetBench()
     {
@@ -437,8 +524,42 @@ public class SimAI : MonoBehaviour {
                 }
                 
             }
+        }
+    }
 
+    public void GetTargetPosDraftingDesk()
+    {
+        DraftingDeskScript draftingDeskScript;
+        float mag1 = 0;
+        float mag2 = 9999;
 
+        //for each desk in draftingDeskList, compare positions to determine which is closest
+        foreach (GameObject draftingDesk in GameStats.draftingDeskList)
+        {
+            //the null check is to prevent a NullReferenceException error upon deleting desk
+            if (draftingDesk != null)
+            {
+                draftingDeskScript = draftingDesk.GetComponent<DraftingDeskScript>();
+                //if this sim is using this desk already, set target so he stays
+                if (objID == draftingDeskScript.gameObject.GetInstanceID())
+                {
+                    targetPos = draftingDeskScript.draftingDeskPos;
+
+                    return;
+                }
+
+                //only get position of desks not being used
+                if (!draftingDeskScript.inProgress)
+                {
+                    mag1 = Vector2.Distance(simStatsScript.simPos, draftingDeskScript.draftingDeskPos);
+                    if (mag1 < mag2)
+                    {
+                        mag2 = mag1;
+                        targetPos = draftingDeskScript.draftingDeskPos;
+                    }
+                }
+
+            }
         }
     }
     //---------------------------------------------------------------------------------------------------------------------------
@@ -535,6 +656,55 @@ public class SimAI : MonoBehaviour {
         }
     }
 
+    //IsItemAvailable(GameStats.countSalesBench, SimFSM.TaskFSM.Sales, "SalesBench");
+    //IsItemAvailable(GameStats.countBathroomStall, SimFSM.TaskFSM.UsingBathroom, "BathroomStall");
+
+    public bool IsItemAvailable(int countItem, SimFSM.TaskFSM taskState, string itemTag)
+    {
+        SimAI otherSimAIScript;
+        SimFSM otherSimFSMScript;
+        int beingUsed = -1;
+        print(countItem);
+        if (countItem >= 0)
+        {
+            //for each sim in the game
+            foreach (GameObject otherSimObj in GameStats.simList)
+            {
+                //if sim is not THIS sim
+                if (otherSimObj != gameObject)
+                {
+                    //get script references for THAT other sim
+                    otherSimAIScript = otherSimObj.GetComponent<SimAI>();
+                    otherSimFSMScript = otherSimObj.GetComponent<SimFSM>();
+
+                    //if THAT sim is doing this task
+                    if ((otherSimFSMScript.mainState == SimFSM.MainFSM.Task && otherSimFSMScript.taskState == taskState))
+                    {
+                        //and if THAT sim is using an object
+                        if (otherSimAIScript.simStatsScript.objectInUse != null)
+                        {
+                            //and the object THAT sim is using is this type of object
+                            if (otherSimAIScript.simStatsScript.objectInUse.tag == itemTag)
+                            {
+                                beingUsed++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (beingUsed < countItem)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+
 
     //COLLISION LOGIC ---------------------------------------------------------------------
     void OnCollisionStay2D(Collision2D col)
@@ -598,6 +768,30 @@ public class SimAI : MonoBehaviour {
         if (col.gameObject.tag == "SalesBench")
         {
             if (simFSMScript.mainState == SimFSM.MainFSM.Task && simFSMScript.taskState == SimFSM.TaskFSM.Sales)
+            {
+                //set the col.parent to be the object in use for this sim
+                simStatsScript.objectInUse = col.transform.gameObject;
+                //consider changing the method from using objID to just using the gameobject itself
+                objID = simStatsScript.objectInUse.GetInstanceID();
+            }
+        }
+
+        //Bathroom Stall
+        if (col.gameObject.tag == "BathroomStall")
+        {
+            if (simFSMScript.mainState == SimFSM.MainFSM.Task && simFSMScript.taskState == SimFSM.TaskFSM.UsingBathroom)
+            {
+                //set the col.parent to be the object in use for this sim
+                simStatsScript.objectInUse = col.transform.gameObject;
+                //consider changing the method from using objID to just using the gameobject itself
+                objID = simStatsScript.objectInUse.GetInstanceID();
+            }
+        }
+
+        //Drafting Desk
+        if (col.gameObject.tag == "DraftingDesk")
+        {
+            if (simFSMScript.mainState == SimFSM.MainFSM.Task && simFSMScript.taskState == SimFSM.TaskFSM.Drafting)
             {
                 //set the col.parent to be the object in use for this sim
                 simStatsScript.objectInUse = col.transform.gameObject;

@@ -27,6 +27,9 @@ public class GameStats : MonoBehaviour {
     public static bool hasSalesBench;
     public static int countSalesBench;
 
+    public static bool hasDraftingDesk;
+    public static int countDraftingDesk;
+
     //ZONE BOOLEANS and COUNTS
     public static bool hasStockpileZone;
     public static int countStockpileZone;
@@ -37,6 +40,7 @@ public class GameStats : MonoBehaviour {
     public static List<GameObject> bathroomStallList = new List<GameObject>();
     public static List<GameObject> widgetBenchList = new List<GameObject>();
     public static List<GameObject> salesBenchList = new List<GameObject>();
+    public static List<GameObject> draftingDeskList = new List<GameObject>();
 
     public static List<GameObject> widgetList = new List<GameObject>();
 
@@ -49,6 +53,9 @@ public class GameStats : MonoBehaviour {
     //TILE LIST
     public static List<GameObject> tileList = new List<GameObject>();
 
+    //OTHER
+    public static int widgetDesignLevel;
+
     void Awake()
     {
         countFridge = -1;
@@ -56,16 +63,19 @@ public class GameStats : MonoBehaviour {
         countBathroomStall = -1;
         countWidgetBench = -1;
         countSalesBench = -1;
+        countDraftingDesk = -1;
 
         countStockpileZone = -1;
 
         countWidgetInStockpile = -1;
+
+        widgetDesignLevel = 0;
     }
 
 	// Use this for initialization
 	void Start () {
 
-        dollars = 1000;
+        dollars = 3000;
         stone = 100;
 
         hasFridge = false;
@@ -74,6 +84,7 @@ public class GameStats : MonoBehaviour {
 
         hasWidgetBench = false;
         hasSalesBench = false;
+        hasDraftingDesk = false;
 
         hasStockpileZone = false;
 
@@ -163,6 +174,24 @@ public class GameStats : MonoBehaviour {
         else if (countSalesBench >= 0)
         {
             hasSalesBench = true;
+        }
+
+        for (var i = draftingDeskList.Count - 1; i > -1; i--)
+        {
+            if (draftingDeskList[i] == null)
+            {
+                draftingDeskList.RemoveAt(i);
+                countDraftingDesk -= 1;
+            }
+
+        }
+        if (countDraftingDesk < 0)
+        {
+            hasDraftingDesk = false;
+        }
+        else if (countDraftingDesk >= 0)
+        {
+            hasDraftingDesk = true;
         }
 
         //print("zone count: " + countStockpileZone);

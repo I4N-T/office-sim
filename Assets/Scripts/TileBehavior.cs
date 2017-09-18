@@ -104,6 +104,12 @@ public class TileBehavior : MonoBehaviour {
             rend.sortingOrder = 1;
             RotateSprite();
         }
+        else if (Inputs.placingDraftingDesk == true)
+        {
+            rend.sprite = highlightSpriteArray[6];
+            rend.sortingOrder = 1;
+            RotateSprite();
+        }
     }
 
     void OnMouseExit()

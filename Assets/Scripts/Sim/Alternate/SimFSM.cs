@@ -23,7 +23,8 @@ public class SimFSM : MonoBehaviour {
         GettingCoffee,
         UsingBathroom,
         MakingWidget,
-        Sales
+        Sales,
+        Drafting
         
     }
 
@@ -51,6 +52,7 @@ public class SimFSM : MonoBehaviour {
             case MainFSM.Idle:
                 simAIScript.IdleWander();
                 simStatsScript.objectInUse = null;
+                simAIScript.objID = 0;
                 break;
 
             case MainFSM.Task:
@@ -80,8 +82,8 @@ public class SimFSM : MonoBehaviour {
                 break;
 
             case TaskFSM.UsingBathroom:
-                //simAIScript.GetTargetPosBathroomStall();
-                //simAIScript.GoToward(simAIScript.targetPos);
+                simAIScript.GetTargetPosBathroomStall();
+                simAIScript.GoToward(simAIScript.targetPos);
                 break;
 
             case TaskFSM.MakingWidget:
@@ -102,7 +104,12 @@ public class SimFSM : MonoBehaviour {
                 simAIScript.GoToward(simAIScript.targetPos);
                 break;
 
-            
+            case TaskFSM.Drafting:
+                simAIScript.GetTargetPosDraftingDesk();
+                simAIScript.GoToward(simAIScript.targetPos);
+                break;
+
+
 
         }
     }

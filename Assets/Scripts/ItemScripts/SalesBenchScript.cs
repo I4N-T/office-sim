@@ -22,6 +22,9 @@ public class SalesBenchScript : MonoBehaviour {
     GameObject sim;
     SimAI simAIScript;
 
+    //QUALITY/PRICE
+    float augmentFactor;
+
     
     void Start () {
         GameStats.hasSalesBench = true;
@@ -60,7 +63,7 @@ public class SalesBenchScript : MonoBehaviour {
             }
             else if (simAIScript.simStatsScript.objectInUse != null)
             {
-                if (simAIScript.simStatsScript.objectInUse.tag == "Fridge")
+                if (simAIScript.simStatsScript.objectInUse.tag != "SalesBench")
                 {
                     StopCoroutine(progressCoroutine);
                     isProgressCoroutineStarted = false;
@@ -89,6 +92,7 @@ public class SalesBenchScript : MonoBehaviour {
             thisWidgetScript = GameStats.widgetList[0].GetComponent<WidgetScript>();
 
             //have chance to sell a widget
+
             //price based on quality 
             if (thisWidgetScript.widgetQuality == "Bad")
             {
@@ -103,20 +107,21 @@ public class SalesBenchScript : MonoBehaviour {
                 widgetSellPrice += 100;
             }
 
+            //base price augmented by widget level (determined by engineering research)
+            augmentFactor = (float)GameStats.widgetDesignLevel / 100f;
+            widgetSellPrice += (int)(widgetSellPrice * augmentFactor);
+
             //bonus or detriment based on sales skill
             if (simAIScript.simStatsScript.sales <= 3)
             {
                 widgetSellPrice = Mathf.RoundToInt(widgetSellPrice * .75f);
-                print("low");
             }
             else if (simAIScript.simStatsScript.sales > 3 && simAIScript.simStatsScript.sales < 7)
             {
-                print("medium");
             }
             else if (simAIScript.simStatsScript.sales >= 7)
             {
                 widgetSellPrice = Mathf.RoundToInt(widgetSellPrice * 1.25f);
-                print("high");
             }
 
             GameStats.dollars += widgetSellPrice;

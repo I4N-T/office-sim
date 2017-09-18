@@ -74,9 +74,6 @@ public class WidgetScript : MonoBehaviour {
             //this (the if statement part after &&) prevents needtohaul sim from dropping widget upon bumping into another sim
             if (col.gameObject.tag == "Sim" && col.gameObject.GetInstanceID() == sim.GetInstanceID())
             {
-                print(col.gameObject.GetInstanceID());
-                print(sim.GetInstanceID());
-                print("ay nigga its poppin off");
                 sim = null;
                 simAIScript = null;
                 simStatsScript = null;
