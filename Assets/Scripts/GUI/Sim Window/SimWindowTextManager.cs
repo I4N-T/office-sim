@@ -40,6 +40,15 @@ public class SimWindowTextManager : MonoBehaviour {
     GameObject simItemTextObj;
     Text simItemText;
 
+    GameObject simEngSkillTextObj;
+    Text simEngSkillText;
+
+    GameObject simProdSkillTextObj;
+    Text simProdSkillText;
+
+    GameObject simSalesSkillTextObj;
+    Text simSalesSkillText;
+
     public Dropdown jobChoiceDropDown;
 
     public bool isSimSelected;
@@ -79,6 +88,10 @@ public class SimWindowTextManager : MonoBehaviour {
         simBladderTextObj = transform.GetChild(7).gameObject;
         //simHungerTextObj = GameObject.Find("HungerText");
 
+        simEngSkillTextObj = transform.GetChild(8).GetChild(0).gameObject;
+        simProdSkillTextObj = transform.GetChild(9).GetChild(0).gameObject;
+        simSalesSkillTextObj = transform.GetChild(10).GetChild(0).gameObject;
+
 
         //GET ACTUAL TEXT COMPONENTS FROM OBJECTS
         simNameText = simNameTextObj.GetComponent<Text>();
@@ -88,6 +101,9 @@ public class SimWindowTextManager : MonoBehaviour {
         simHungerText = simHungerTextObj.GetComponent<Text>();
         simBladderText = simBladderTextObj.GetComponent<Text>();
         simItemText = simItemTextObj.GetComponent<Text>();
+        simEngSkillText = simEngSkillTextObj.GetComponent<Text>();
+        simProdSkillText = simProdSkillTextObj.GetComponent<Text>();
+        simSalesSkillText = simSalesSkillTextObj.GetComponent<Text>();
 
 
     }
@@ -115,6 +131,10 @@ public class SimWindowTextManager : MonoBehaviour {
         simEnergyText.text = "Energy: " + simStatsScript.energy + "/" + "100";
         simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
         simBladderText.text = "Bladder: " + simStatsScript.bladder + "/" + "100";
+
+        simEngSkillText.text = simStatsScript.engineering + "/10";
+        simProdSkillText.text = simStatsScript.labor + "/10";
+        simSalesSkillText.text = simStatsScript.sales + "/10";
 
 
         if (simFSMScript.mainState == SimFSM.MainFSM.Idle)
@@ -159,6 +179,14 @@ public class SimWindowTextManager : MonoBehaviour {
                 if (simStatsScript.objectInUse != null)
                 {
                     simStatusText.text = "Making cold calls at " + simStatsScript.objectInUse;
+                }
+            }
+            if (simFSMScript.taskState == SimFSM.TaskFSM.Drafting)
+            {
+                simStatusText.text = "Drafting design improvements";
+                if (simStatsScript.objectInUse != null)
+                {
+                    simStatusText.text = "Drafting design improvements at " + simStatsScript.objectInUse;
                 }
             }
         }

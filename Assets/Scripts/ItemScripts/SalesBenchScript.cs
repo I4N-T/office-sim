@@ -12,6 +12,7 @@ public class SalesBenchScript : MonoBehaviour {
     public bool inProgress;
     bool isProgressCoroutineStarted;
     Coroutine progressCoroutine = null;
+    Coroutine skillExpCoroutine = null;
 
     //WIDGETS INTERACTION
     WidgetScript thisWidgetScript;
@@ -25,8 +26,21 @@ public class SalesBenchScript : MonoBehaviour {
     //QUALITY/PRICE
     float augmentFactor;
 
-    
+    //RENDERER (for delete coroutine)
+    SpriteRenderer rend;
+
+    //AUDIO
+    AudioClip sellSoundClip;
+    AudioClip deleteSoundClip;
+    public AudioSource sfxSource;
+
+
     void Start () {
+
+        //Source will stay with sellsoundclip unless deletion happens
+        sfxSource.clip = AudioScript.instance.sellSoundClip;
+        deleteSoundClip = AudioScript.instance.deleteSoundClip;
+
         GameStats.hasSalesBench = true;
         salesBenchPos = gameObject.transform.position;
 
@@ -58,6 +72,7 @@ public class SalesBenchScript : MonoBehaviour {
             if (simAIScript.simStatsScript.objectInUse == null)
             {
                 StopCoroutine(progressCoroutine);
+                StopCoroutine(skillExpCoroutine);
                 isProgressCoroutineStarted = false;
                 inProgress = false;
             }
@@ -66,6 +81,7 @@ public class SalesBenchScript : MonoBehaviour {
                 if (simAIScript.simStatsScript.objectInUse.tag != "SalesBench")
                 {
                     StopCoroutine(progressCoroutine);
+                    StopCoroutine(skillExpCoroutine);
                     isProgressCoroutineStarted = false;
                     inProgress = false;
                 }
@@ -80,12 +96,14 @@ public class SalesBenchScript : MonoBehaviour {
         if (!isProgressCoroutineStarted)
         {
             progressCoroutine = StartCoroutine(ProgressIncrement(.5f));
+            skillExpCoroutine = StartCoroutine(SkillExpIncrement(3f));
         }
 
         if (progressCount >= 100)
         {
             //stop coroutine and set inProgress to false
             StopCoroutine(progressCoroutine);
+            StopCoroutine(skillExpCoroutine);
             inProgress = false;
             //simAIScript.isWidgetBenchInProgress = false;
 
@@ -126,6 +144,7 @@ public class SalesBenchScript : MonoBehaviour {
 
             GameStats.dollars += widgetSellPrice;
             print("widget sold for $" + widgetSellPrice);
+            sfxSource.Play();
             Destroy(GameStats.widgetList[0]);
 
             //set progressCount back to 0
@@ -153,6 +172,18 @@ public class SalesBenchScript : MonoBehaviour {
         }
     }
 
+    IEnumerator SkillExpIncrement(float waitTime)
+    {
+        isProgressCoroutineStarted = true;
+
+        while (inProgress)
+        {
+            simAIScript.simStatsScript.salesExp += 1;
+            yield return new WaitForSeconds(waitTime);
+
+        }
+    }
+
     void OnTriggerStay2D(Collider2D col)
     {
         if (col.gameObject.tag == "Sim")
@@ -162,6 +193,19 @@ public class SalesBenchScript : MonoBehaviour {
             {
                 inProgress = true;
             }
+        }
+    }
+
+    //When sim goes to use bathroom, must set objectinuse to null in order to stop the coroutine
+    void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "Sim")
+        {
+            //this sets the sim's objectinuse to null once it leaves the bench
+            //the reason we declare a new SimStats object here is in case another unrelated sim happens to cross through the trigger
+            SimAI simAIHere = col.gameObject.GetComponent<SimAI>();
+            simAIHere.simStatsScript.objectInUse = null;
+
         }
     }
 
@@ -179,9 +223,24 @@ public class SalesBenchScript : MonoBehaviour {
         //print("click happened");
         if (DeleteScript.isDelete)
         {
-            //destroy object
-            Destroy(gameObject);
-            DeleteScript.isDelete = false;
+            StartCoroutine(Delete());
         }
+    }
+
+    IEnumerator Delete()
+    {
+        //play sound
+        sfxSource.clip = deleteSoundClip;
+        sfxSource.Play();
+        //disable sprite
+        rend = gameObject.GetComponent<SpriteRenderer>();
+        rend.enabled = false;
+
+        DeleteScript.isDelete = false;
+
+        yield return new WaitForSecondsRealtime(.75f);
+
+        //destroy object
+        Destroy(gameObject);
     }
 }

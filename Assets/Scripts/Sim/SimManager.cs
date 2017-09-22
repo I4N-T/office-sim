@@ -99,6 +99,11 @@ public class SimManager : MonoBehaviour {
         simStatsScript.hunger = 100;
         simStatsScript.bladder = 100;
 
+        //INITIALIZATION OF EXPERIENCE
+        simStatsScript.engineeringExp = 0;
+        simStatsScript.laborExp = 0;
+        simStatsScript.salesExp = 0;
+
         /*simNameText.enabled = false;
         //simNameText.text = "Name: " + simStatsScript.simName;
 
@@ -117,7 +122,9 @@ public class SimManager : MonoBehaviour {
 
     void Update()
     {
-        
+        //Update sim skill levels
+        SkillLevelsMethod();
+        print(simStatsScript.laborExp);
 
         //if Sim is selected then enable text and disable other sims' text
         if (isSimSelected == true)
@@ -138,28 +145,7 @@ public class SimManager : MonoBehaviour {
                 hasRunDisable = true;
 
             }
-
-            
-
-            //update and display this sim's text
-            //StatsTextUpdate();
-
-            /*simNameText.enabled = true;
-            simEnergyText.enabled = true;
-            simHungerText.enabled = true;
-            simStatusText.enabled = true;
-            simItemText.enabled = true;*/
         }
-       /* else if (isSimSelected == false)
-        {
-            simNameText.enabled = false;
-            simEnergyText.enabled = false;
-            simHungerText.enabled = false;
-            simStatusText.enabled = false;
-            simItemText.enabled = false;
-        }*/
-
-
 
         if (Input.GetMouseButtonUp(1))
         {
@@ -169,58 +155,134 @@ public class SimManager : MonoBehaviour {
 
     }
 
-    /*void StatsTextUpdate()
+    void SkillLevelsMethod()
     {
-        //print("hunger from script: " + simStatsScript.hunger);
-        simNameText.text = "Name: " + simStatsScript.simName;
-        simEnergyText.text = "Energy: " + simStatsScript.energy + "/" + "100";
-        simHungerText.text = "Hunger: " + simStatsScript.hunger + "/" + "100";
-
-
-         if (simFSMScript.mainState == SimFSM.MainFSM.Idle)
-         {
-             simStatusText.text = "idle";
-         }
-         else if (simFSMScript.mainState == SimFSM.MainFSM.Task)
-         {
-             if (simFSMScript.taskState == SimFSM.TaskFSM.GettingFood)
-             {
-                 simStatusText.text = "getting food";
-             }
-             if (simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget && simAIScript.needToHaul == false)
-             {
-                 simStatusText.text = "Making Widget";
-                if (simStatsScript.objectInUse != null)
-                {
-                    simStatusText.text = "Making Widget at " + simStatsScript.objectInUse;
-                }
-             }
-             if (simFSMScript.taskState == SimFSM.TaskFSM.MakingWidget && simAIScript.needToHaul == true)
-             {
-                 if (simStatsScript.itemInPossession != null)
-                 {
-                     simStatusText.text = "hauling " + simStatsScript.itemInPossession.name;
-                 }
-             }
-            if (simFSMScript.taskState == SimFSM.TaskFSM.Sales)
-            {
-                simStatusText.text = "Making cold calls";
-                if (simStatsScript.objectInUse != null)
-                {
-                    simStatusText.text = "Making cold calls at " + simStatsScript.objectInUse;
-                }
-            }
+        //ENGINEERING
+        if (simStatsScript.engineeringExp < 100)
+        {
+            simStatsScript.engineering = 1;
+        }
+        else if (simStatsScript.engineeringExp >= 100 && simStatsScript.engineeringExp < 300)
+        {
+            simStatsScript.engineering = 2;
+        }
+        else if (simStatsScript.engineeringExp >= 300 && simStatsScript.engineeringExp < 800)
+        {
+            simStatsScript.engineering = 3;
+        }
+        else if (simStatsScript.engineeringExp >= 800 && simStatsScript.engineeringExp < 1600)
+        {
+            simStatsScript.engineering = 4;
+        }
+        else if (simStatsScript.engineeringExp >= 1600 && simStatsScript.engineeringExp < 2800)
+        {
+            simStatsScript.engineering = 5;
+        }
+        else if (simStatsScript.engineeringExp >= 2800 && simStatsScript.engineeringExp < 4200)
+        {
+            simStatsScript.engineering = 6;
+        }
+        else if (simStatsScript.engineeringExp >= 4200 && simStatsScript.engineeringExp < 6000)
+        {
+            simStatsScript.engineering = 7;
+        }
+        else if (simStatsScript.engineeringExp >= 6000 && simStatsScript.engineeringExp < 8000)
+        {
+            simStatsScript.engineering = 8;
+        }
+        else if (simStatsScript.engineeringExp >= 8000 && simStatsScript.engineeringExp < 10300)
+        {
+            simStatsScript.engineering = 9;
+        }
+        else if (simStatsScript.engineeringExp >= 10300)
+        {
+            simStatsScript.engineering = 10;
         }
 
-         if (simStatsScript.itemInPossession != null)
-         {
-             simItemText.text = "Item: " + simStatsScript.itemInPossession.name;
-         }
-         else if (simStatsScript.itemInPossession == null)
-         {
-             simItemText.text = "Item: ";
-         }
-    }*/
+        //PRODUCTION
+        if (simStatsScript.laborExp < 100)
+        {
+            simStatsScript.labor = 1;
+        }
+        else if (simStatsScript.laborExp >= 100 && simStatsScript.laborExp < 300)
+        {
+            simStatsScript.labor = 2;
+        }
+        else if (simStatsScript.laborExp >= 300 && simStatsScript.laborExp < 800)
+        {
+            simStatsScript.labor = 3;
+        }
+        else if (simStatsScript.laborExp >= 800 && simStatsScript.laborExp < 1600)
+        {
+            simStatsScript.labor = 4;
+        }
+        else if (simStatsScript.laborExp >= 1600 && simStatsScript.laborExp < 2800)
+        {
+            simStatsScript.labor = 5;
+        }
+        else if (simStatsScript.laborExp >= 2800 && simStatsScript.laborExp < 4200)
+        {
+            simStatsScript.labor = 6;
+        }
+        else if (simStatsScript.laborExp >= 4200 && simStatsScript.laborExp < 6000)
+        {
+            simStatsScript.labor = 7;
+        }
+        else if (simStatsScript.laborExp >= 6000 && simStatsScript.laborExp < 8000)
+        {
+            simStatsScript.labor = 8;
+        }
+        else if (simStatsScript.laborExp >= 8000 && simStatsScript.laborExp < 10300)
+        {
+            simStatsScript.labor = 9;
+        }
+        else if (simStatsScript.laborExp >= 10300)
+        {
+            simStatsScript.labor = 10;
+        }
+
+        //SALES
+        if (simStatsScript.salesExp < 100)
+        {
+            simStatsScript.sales = 1;
+        }
+        else if (simStatsScript.salesExp >= 100 && simStatsScript.salesExp < 300)
+        {
+            simStatsScript.sales = 2;
+        }
+        else if (simStatsScript.salesExp >= 300 && simStatsScript.salesExp < 800)
+        {
+            simStatsScript.sales = 3;
+        }
+        else if (simStatsScript.salesExp >= 800 && simStatsScript.salesExp < 1600)
+        {
+            simStatsScript.sales = 4;
+        }
+        else if (simStatsScript.salesExp >= 1600 && simStatsScript.salesExp < 2800)
+        {
+            simStatsScript.sales = 5;
+        }
+        else if (simStatsScript.salesExp >= 2800 && simStatsScript.salesExp < 4200)
+        {
+            simStatsScript.sales = 6;
+        }
+        else if (simStatsScript.salesExp >= 4200 && simStatsScript.salesExp < 6000)
+        {
+            simStatsScript.sales = 7;
+        }
+        else if (simStatsScript.salesExp >= 6000 && simStatsScript.salesExp < 8000)
+        {
+            simStatsScript.sales = 8;
+        }
+        else if (simStatsScript.salesExp >= 8000 && simStatsScript.salesExp < 10300)
+        {
+            simStatsScript.sales = 9;
+        }
+        else if (simStatsScript.salesExp >= 10300)
+        {
+            simStatsScript.sales = 10;
+        }
+    }
 
     void DisableOtherSimText()
     {
@@ -272,25 +334,6 @@ public class SimManager : MonoBehaviour {
 
         }
 
-
-        /*if (simStatsScript.canEngineer)
-        {
-            //simStatsScript.canLabor = false;
-            //simStatsScript.canSales = false;
-            simStatsScript.simJob = "Engineer";
-        }
-        else if (simStatsScript.canLabor)
-        {
-            //simStatsScript.canEngineer = false;
-            //simStatsScript.canSales = false;
-            simStatsScript.simJob = "Production";
-        }
-        else if (simStatsScript.canSales)
-        {
-            //simStatsScript.canEngineer = false;
-            //simStatsScript.canLabor = false;
-            simStatsScript.simJob = "Sales";
-        }*/
     }
 
 

@@ -333,6 +333,7 @@ public class SimAI : MonoBehaviour {
                     if (!isFinishedBathroom)
                     {
                         targetPos = bathroomStallScript.bathroomStallPos;
+                        //simStatsScript.objectInUse = bathroomStall;
                     }
                     //this makes sim go toward target OUTSIDE the bathroom stall, so he gets out of the way
                     else if (isFinishedBathroom)
@@ -352,6 +353,7 @@ public class SimAI : MonoBehaviour {
                     {
                         mag2 = mag1;
                         targetPos = bathroomStallScript.bathroomStallPos;
+                        //simStatsScript.objectInUse = bathroomStall;
                         /*simStatsScript.objectInUse = salesBench;
                         objID = salesBench.GetInstanceID();*/
                     }
@@ -664,7 +666,6 @@ public class SimAI : MonoBehaviour {
         SimAI otherSimAIScript;
         SimFSM otherSimFSMScript;
         int beingUsed = -1;
-        print(countItem);
         if (countItem >= 0)
         {
             //for each sim in the game

@@ -94,13 +94,6 @@ public class GameStats : MonoBehaviour {
 	
     void Update()
     {
-        //JUST FOR TESTING
-        foreach (GameObject sim in simList)
-        {
-            SimStats simstatsscript = sim.GetComponent<SimStats>();
-            print(simstatsscript.simName);
-        }
-        //ABOVE IS JUST FOR TESTING
 
         for (var i = fridgeList.Count - 1; i > -1; i--)
         {
@@ -141,7 +134,7 @@ public class GameStats : MonoBehaviour {
         }
         if (countBathroomStall < 0)
         {
-            hasFridge = false;
+            hasBathroomStall = false;
         }
 
         for (var i = widgetBenchList.Count - 1; i > -1; i--)

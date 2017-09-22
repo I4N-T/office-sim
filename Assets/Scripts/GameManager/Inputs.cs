@@ -46,12 +46,17 @@ public class Inputs : MonoBehaviour {
     public GameObject salesBenchObject;
     public GameObject draftingDeskObject;
 
-	// Use this for initialization
-	void Start () {
-    
-       
+    //AUDIO
+    AudioClip buildSoundClip;
+    public AudioSource sfxSource;
 
-	}
+    // Use this for initialization
+    void Start () {
+
+        buildSoundClip = AudioScript.instance.buildSoundClip;
+        sfxSource.clip = buildSoundClip;
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -117,7 +122,10 @@ public class Inputs : MonoBehaviour {
                 GameStats.dollars -= 300;
                 Instantiate(widgetBenchObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
                 placingWidgetBench = false;
-               
+
+                //sfx
+                sfxSource.Play();
+
             }
         }
 
@@ -129,6 +137,9 @@ public class Inputs : MonoBehaviour {
                 GameStats.dollars -= 200;
                 Instantiate(fridgeObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
                 placingFridge = false;
+
+                //sfx
+                sfxSource.Play();
             }
         }
 
@@ -140,6 +151,9 @@ public class Inputs : MonoBehaviour {
                 GameStats.dollars -= 100;
                 Instantiate(coffeeMachineObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
                 placingCoffeeMachine = false;
+
+                //sfx
+                sfxSource.Play();
             }
         }
 
@@ -151,6 +165,9 @@ public class Inputs : MonoBehaviour {
                 GameStats.dollars -= 300;
                 Instantiate(bathroomStallObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
                 placingBathroomStall = false;
+
+                //sfx
+                sfxSource.Play();
             }
         }
 
@@ -164,6 +181,9 @@ public class Inputs : MonoBehaviour {
                 Instantiate(salesBenchObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
                 placingSalesBench = false;
 
+                //sfx
+                sfxSource.Play();
+
             }
         }
 
@@ -176,6 +196,9 @@ public class Inputs : MonoBehaviour {
                 GameStats.dollars -= 300;
                 Instantiate(draftingDeskObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
                 placingDraftingDesk = false;
+
+                //sfx
+                sfxSource.Play();
 
             }
         }

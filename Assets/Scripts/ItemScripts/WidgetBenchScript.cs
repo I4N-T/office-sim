@@ -21,16 +21,26 @@ public class WidgetBenchScript : MonoBehaviour {
     public bool inProgress;
     bool isProgressCoroutineStarted;
     Coroutine progressCoroutine = null;
+    Coroutine skillExpCoroutine = null;
 
     //USE TO DETERMINE IF needToHaul A WIDGET
     public bool hasWidgetOnIt;
 
-    //USE TO DETERMINE IF BENCH IS ALREADY IN USE
-    //public bool isOccupied;
+    //RENDERER (for delete coroutine)
+    SpriteRenderer rend;
+
+    //AUDIO
+    AudioClip widgetProduceSoundClip;
+    AudioClip deleteSoundClip;
+    public AudioSource sfxSource;
 
 
     void Start()
     {
+        //Source will stay with widgetProduceSoundClip unless deletion happens
+        sfxSource.clip = AudioScript.instance.widgetProduceSoundClip;
+        deleteSoundClip = AudioScript.instance.deleteSoundClip;
+
         widgetBenchCollider = gameObject.GetComponent<BoxCollider2D>();
         GameStats.hasWidgetBench = true;
         widgetBenchPos = gameObject.transform.position;
@@ -80,6 +90,7 @@ public class WidgetBenchScript : MonoBehaviour {
             if (progressCoroutine != null)
             {
                 StopCoroutine(progressCoroutine);
+                StopCoroutine(skillExpCoroutine);
             }
         }
 
@@ -106,12 +117,14 @@ public class WidgetBenchScript : MonoBehaviour {
         if (!isProgressCoroutineStarted)
         {
             progressCoroutine = StartCoroutine(ProgressIncrement(.25f));
+            skillExpCoroutine = StartCoroutine(SkillExpIncrement(3f));
         }
 
         if (progressCount >= 100)
         {
             //stop coroutine and set inProgress to false
             StopCoroutine(progressCoroutine);
+            StopCoroutine(skillExpCoroutine);
             inProgress = false;
             simAIScript.isWidgetBenchInProgress = false;
             WidgetScript thisWidgetScript;
@@ -122,22 +135,18 @@ public class WidgetBenchScript : MonoBehaviour {
             //make sure widget instantiates with the proper offset in order to allow the collider to overlap with sim collider
             if (gameObject.transform.eulerAngles == new Vector3(0,0, 0))
             {
-                print(1);
                 widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x, widgetBenchPos.y - .2f, -1), gameObject.transform.rotation) as GameObject;
             }
             else if (gameObject.transform.eulerAngles == new Vector3(0, 0, 90))
             {
-                print(2);
                 widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x + .2f, widgetBenchPos.y, -1), gameObject.transform.rotation) as GameObject;
             }
             else if (gameObject.transform.eulerAngles == new Vector3(0, 0, 180))
             {
-                print(3);
                 widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x, widgetBenchPos.y + .2f, -1), gameObject.transform.rotation) as GameObject;
             }
             else if (gameObject.transform.eulerAngles == new Vector3(0, 0, 270))
             {
-                print(4);
                 widgetHere = Instantiate(widgetPrefab, new Vector3(widgetBenchPos.x - .2f, widgetBenchPos.y, -1), gameObject.transform.rotation) as GameObject;
             }
 
@@ -157,6 +166,9 @@ public class WidgetBenchScript : MonoBehaviour {
                 thisWidgetScript.widgetQuality = "Good";
             }
 
+            //play sound
+            sfxSource.Play();
+
             //set progressCount back to 0
             progressCount = 0;
         }
@@ -174,6 +186,18 @@ public class WidgetBenchScript : MonoBehaviour {
         }
     }
 
+    IEnumerator SkillExpIncrement(float waitTime)
+    {
+        isProgressCoroutineStarted = true;
+
+        while (inProgress)
+        {
+            simAIScript.simStatsScript.laborExp += 1;
+            yield return new WaitForSeconds(waitTime);
+
+        }
+    }
+
 
     //DELETE OBJECT
     void OnMouseDown()
@@ -181,15 +205,25 @@ public class WidgetBenchScript : MonoBehaviour {
         //print("click happened");
         if (DeleteScript.isDelete)
         {
-            if (simAIScript != null)
-            {
-                simAIScript.isWidgetBenchInProgress = false;
-            }
-
-            //destroy object
-            Destroy(gameObject);
-            DeleteScript.isDelete = false;
+            StartCoroutine(Delete());
         }
+    }
+
+    IEnumerator Delete()
+    {
+        //play sound
+        sfxSource.clip = deleteSoundClip;
+        sfxSource.Play();
+        //disable sprite
+        rend = gameObject.GetComponent<SpriteRenderer>();
+        rend.enabled = false;
+
+        DeleteScript.isDelete = false;
+
+        yield return new WaitForSecondsRealtime(.75f);
+
+        //destroy object
+        Destroy(gameObject);
     }
 
 }

@@ -23,6 +23,7 @@ public class WidgetBenchChildScript : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D col)
     {
+        //COULD ANOTHER SIM ACCIDENTALLY TRIGGER THIS?
         if (col.gameObject.tag == "Sim")
         {
             widgetBenchScript.simAIScript.isWidgetBenchInProgress = false;
