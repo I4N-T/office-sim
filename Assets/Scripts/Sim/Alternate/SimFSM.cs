@@ -89,8 +89,22 @@ public class SimFSM : MonoBehaviour {
             case TaskFSM.MakingWidget:
                 if (!simAIScript.needToHaul)
                 {
+                    if (!simAIScript.simPathfindingScript.isTakePathTime)
+                    {
                         simAIScript.GetTargetPosWidgetBench();
-                        simAIScript.GoToward(simAIScript.targetPos);  
+                        simAIScript.simPathfindingScript.AStarPathMethod(simAIScript.targetPos);
+                    }         
+                    else if (simAIScript.simPathfindingScript.isTakePathTime)
+                    {
+                        StartCoroutine(simAIScript.simPathfindingScript.TakePath(simAIScript.targetPos));
+                        //simAIScript.simPathfindingScript.TakePath(simAIScript.targetPos);
+                        simAIScript.simPathfindingScript.isTakePathTime = false;
+
+                        if (simAIScript.simPathfindingScript.isGoing)
+                        {
+                            simAIScript.GoToward(simAIScript.targetPos);
+                        }
+                    }
                 }
                 else if (simAIScript.needToHaul)
                 {

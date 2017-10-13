@@ -124,7 +124,6 @@ public class SimManager : MonoBehaviour {
     {
         //Update sim skill levels
         SkillLevelsMethod();
-        print(simStatsScript.laborExp);
 
         //if Sim is selected then enable text and disable other sims' text
         if (isSimSelected == true)
@@ -158,6 +157,8 @@ public class SimManager : MonoBehaviour {
     void SkillLevelsMethod()
     {
         //ENGINEERING
+        int previousEngLvl = simStatsScript.engineering;
+
         if (simStatsScript.engineeringExp < 100)
         {
             simStatsScript.engineering = 1;
@@ -199,7 +200,15 @@ public class SimManager : MonoBehaviour {
             simStatsScript.engineering = 10;
         }
 
+        //leveled up?
+        if (simStatsScript.engineering > previousEngLvl)
+        {
+            EventLogScript.instance.AddEvent(simStatsScript.simName + "'s ENGINEERING skill level is now " + simStatsScript.engineering);
+        }
+
         //PRODUCTION
+        int previousProdLvl = simStatsScript.labor;
+
         if (simStatsScript.laborExp < 100)
         {
             simStatsScript.labor = 1;
@@ -241,7 +250,15 @@ public class SimManager : MonoBehaviour {
             simStatsScript.labor = 10;
         }
 
+        //leveled up?
+        if (simStatsScript.labor > previousProdLvl)
+        {
+            EventLogScript.instance.AddEvent(simStatsScript.simName + "'s PRODUCTION skill level is now " + simStatsScript.labor);
+        }
+
         //SALES
+        int previousSalesLvl = simStatsScript.sales;
+
         if (simStatsScript.salesExp < 100)
         {
             simStatsScript.sales = 1;
@@ -281,6 +298,12 @@ public class SimManager : MonoBehaviour {
         else if (simStatsScript.salesExp >= 10300)
         {
             simStatsScript.sales = 10;
+        }
+
+        //leveled up?
+        if (simStatsScript.sales > previousSalesLvl)
+        {
+            EventLogScript.instance.AddEvent(simStatsScript.simName + "'s SALES skill level is now " + simStatsScript.sales);
         }
     }
 

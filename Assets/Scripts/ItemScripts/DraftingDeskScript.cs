@@ -100,6 +100,8 @@ public class DraftingDeskScript : MonoBehaviour {
             GameStats.widgetDesignLevel += 1;
             //print(GameStats.widgetDesignLevel);
 
+            EventLogScript.instance.AddEvent(simAIScript.simStatsScript.simName + " made a design change. The current revision level is " + GameStats.widgetDesignLevel + ".");
+
             //set progressCount back to 0
             progressCount = 0;
             isProgressCoroutineStarted = false;

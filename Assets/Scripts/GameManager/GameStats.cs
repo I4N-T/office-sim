@@ -53,6 +53,9 @@ public class GameStats : MonoBehaviour {
     //TILE LIST
     public static List<GameObject> tileList = new List<GameObject>();
 
+    //NODE LIST (for pathfinding)
+    public static List<Node> nodeList = new List<Node>();
+
     //OTHER
     public static int widgetDesignLevel;
 
@@ -69,7 +72,7 @@ public class GameStats : MonoBehaviour {
 
         countWidgetInStockpile = -1;
 
-        widgetDesignLevel = 0;
+        widgetDesignLevel = 1;
     }
 
 	// Use this for initialization

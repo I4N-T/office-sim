@@ -35,6 +35,8 @@ public class SimAI : MonoBehaviour {
 
     public SimFSM simFSMScript;
 
+    public pathfindingNew simPathfindingScript;
+
     public int objID;
 
     public bool isStarted;
@@ -47,6 +49,7 @@ public class SimAI : MonoBehaviour {
 
         simFSMScript = gameObject.GetComponent<SimFSM>();
         simStatsScript = gameObject.GetComponent<SimStats>();
+        simPathfindingScript = gameObject.GetComponent<pathfindingNew>();
         //simManagerScript = gameObject.GetComponent<SimManager>();
 
         //GET OTHER SIM OBJECTS ARRAY
@@ -764,6 +767,10 @@ public class SimAI : MonoBehaviour {
                 objID = simStatsScript.objectInUse.GetInstanceID();
             }
         }
+    }
+
+    void OnTriggerStay2D(Collider2D col)
+    {
 
         //SALES BENCH
         if (col.gameObject.tag == "SalesBench")

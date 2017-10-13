@@ -29,6 +29,10 @@ public class SalesBenchScript : MonoBehaviour {
     //RENDERER (for delete coroutine)
     SpriteRenderer rend;
 
+    //EVENT LOG SCRIPT
+    //public GameObject eventLogObj;
+    //EventLogScript eventLogScript;
+
     //AUDIO
     AudioClip sellSoundClip;
     AudioClip deleteSoundClip;
@@ -54,6 +58,7 @@ public class SalesBenchScript : MonoBehaviour {
 	
 	
 	void Update () {
+
         //Update sales bench position 
         salesBenchPos = gameObject.transform.position;
 
@@ -95,6 +100,7 @@ public class SalesBenchScript : MonoBehaviour {
     {
         if (!isProgressCoroutineStarted)
         {
+            print("it happened");
             progressCoroutine = StartCoroutine(ProgressIncrement(.5f));
             skillExpCoroutine = StartCoroutine(SkillExpIncrement(3f));
         }
@@ -143,8 +149,15 @@ public class SalesBenchScript : MonoBehaviour {
             }
 
             GameStats.dollars += widgetSellPrice;
+
+            //print to eventLog
+            EventLogScript.instance.AddEvent(simAIScript.simStatsScript.simName + " sold a widget for $" + widgetSellPrice);
             print("widget sold for $" + widgetSellPrice);
+
+            //play sound
             sfxSource.Play();
+
+            //destroy widget
             Destroy(GameStats.widgetList[0]);
 
             //set progressCount back to 0
@@ -162,8 +175,6 @@ public class SalesBenchScript : MonoBehaviour {
 
     IEnumerator ProgressIncrement(float waitTime)
     {
-        isProgressCoroutineStarted = true;
-
         while (inProgress)
         {
             progressCount += 1;

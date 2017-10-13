@@ -8,6 +8,8 @@ public class TileGenerator : MonoBehaviour {
     public Transform tileHolderTransform;
     GameObject tileForList;
 
+    public static bool haveBeenGenerated;
+
 	void Start ()
     {
         Generate(squareSize);
@@ -25,6 +27,8 @@ public class TileGenerator : MonoBehaviour {
                 GameStats.tileList.Add(tileForList);
             }
         }
+
+        haveBeenGenerated = true;
     }
 
 

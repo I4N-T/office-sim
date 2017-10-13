@@ -166,6 +166,9 @@ public class WidgetBenchScript : MonoBehaviour {
                 thisWidgetScript.widgetQuality = "Good";
             }
 
+            //print to event log
+            EventLogScript.instance.AddEvent(simAIScript.simStatsScript.simName + " built a widget of " + thisWidgetScript.widgetQuality + " quality.");
+
             //play sound
             sfxSource.Play();
 

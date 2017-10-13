@@ -52,6 +52,7 @@
      <Compile Include="Assets\Scripts\GUI\CoffeeMachinePlacementScript.cs" />
      <Compile Include="Assets\Scripts\GUI\DeleteScript.cs" />
      <Compile Include="Assets\Scripts\GUI\DraftingDeskPlacementScript.cs" />
+     <Compile Include="Assets\Scripts\GUI\EventLogScript.cs" />
      <Compile Include="Assets\Scripts\GUI\FridgePlacementScript.cs" />
      <Compile Include="Assets\Scripts\GUI\SalesBenchPlacement.cs" />
      <Compile Include="Assets\Scripts\GUI\Sim Window\CloseButtonScript.cs" />
@@ -64,6 +65,8 @@
      <Compile Include="Assets\Scripts\GameManager\Inputs.cs" />
      <Compile Include="Assets\Scripts\GameManager\MainGUI.cs" />
      <Compile Include="Assets\Scripts\GameManager\MousePosition.cs" />
+     <Compile Include="Assets\Scripts\GameManager\Node.cs" />
+     <Compile Include="Assets\Scripts\GameManager\NodeListControl.cs" />
      <Compile Include="Assets\Scripts\GameManager\SimGenerator.cs" />
      <Compile Include="Assets\Scripts\GameManager\TileGenerator.cs" />
      <Compile Include="Assets\Scripts\ItemScripts\Alternate\AltWidgetBenchChildScript.cs" />
@@ -81,6 +84,7 @@
      <Compile Include="Assets\Scripts\Sim\Alternate\AltSimManager.cs" />
      <Compile Include="Assets\Scripts\Sim\Alternate\NeedsControl.cs" />
      <Compile Include="Assets\Scripts\Sim\Alternate\SimFSM.cs" />
+     <Compile Include="Assets\Scripts\Sim\Pathfinding.cs" />
      <Compile Include="Assets\Scripts\Sim\SimAI.cs" />
      <Compile Include="Assets\Scripts\Sim\SimManager.cs" />
      <Compile Include="Assets\Scripts\Sim\SimStats.cs" />
@@ -88,6 +92,7 @@
      <Compile Include="Assets\Scripts\TileBehavior.cs" />
      <Compile Include="Assets\Scripts\TileMeshScript.cs" />
      <Compile Include="Assets\Scripts\ZoneBehavior.cs" />
+     <Compile Include="Assets\pathfindingNew.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

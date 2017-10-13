@@ -122,6 +122,7 @@ public class TileBehavior : MonoBehaviour {
     //COLLISIONS AND TRIGGERS
     void OnTriggerStay2D(Collider2D col)
     {
+
         if (col.gameObject.tag != "Sim" && col.gameObject.tag != "StockpileZone" && itemOnTile == null)
         {
             itemOnTile = col.gameObject;

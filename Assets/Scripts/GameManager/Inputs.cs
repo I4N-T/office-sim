@@ -56,10 +56,17 @@ public class Inputs : MonoBehaviour {
         buildSoundClip = AudioScript.instance.buildSoundClip;
         sfxSource.clip = buildSoundClip;
 
+       
+
     }
 	
-	// Update is called once per frame
+
 	void Update () {
+
+        if (NodeListControl.instance.isTimeToCheck)
+        {
+            StartCoroutine(NodeListControl.instance.CheckForObstacles());
+        }
 
         //UPDATE ISMOUSEOVERUI
         IsMouseOverUI();
@@ -121,6 +128,10 @@ public class Inputs : MonoBehaviour {
             {
                 GameStats.dollars -= 300;
                 Instantiate(widgetBenchObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
+
+                //pathfinding - mark the node as unwalkable MAKE SURE THIS HAPPENS AFTER THE INSTANTIATION HAS CAUSED ITEMONTILE NOT NULL
+                NodeListControl.instance.isTimeToCheck = true;
+                
                 placingWidgetBench = false;
 
                 //sfx
@@ -136,6 +147,10 @@ public class Inputs : MonoBehaviour {
             {
                 GameStats.dollars -= 200;
                 Instantiate(fridgeObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
+
+                //pathfinding
+                NodeListControl.instance.isTimeToCheck = true;
+
                 placingFridge = false;
 
                 //sfx
@@ -150,6 +165,10 @@ public class Inputs : MonoBehaviour {
             {
                 GameStats.dollars -= 100;
                 Instantiate(coffeeMachineObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
+
+                //pathfinding
+                NodeListControl.instance.isTimeToCheck = true;
+
                 placingCoffeeMachine = false;
 
                 //sfx
@@ -164,6 +183,10 @@ public class Inputs : MonoBehaviour {
             {
                 GameStats.dollars -= 300;
                 Instantiate(bathroomStallObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
+
+                //pathfinding
+                NodeListControl.instance.isTimeToCheck = true;
+
                 placingBathroomStall = false;
 
                 //sfx
@@ -179,6 +202,10 @@ public class Inputs : MonoBehaviour {
             {
                 GameStats.dollars -= 300;
                 Instantiate(salesBenchObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
+
+                //pathfinding
+                NodeListControl.instance.isTimeToCheck = true;
+
                 placingSalesBench = false;
 
                 //sfx
@@ -195,6 +222,10 @@ public class Inputs : MonoBehaviour {
             {
                 GameStats.dollars -= 300;
                 Instantiate(draftingDeskObject, mousePosition, Quaternion.AngleAxis(TileBehavior.rendAngle, Vector3.forward));
+
+                //pathfinding
+                NodeListControl.instance.isTimeToCheck = true;
+
                 placingDraftingDesk = false;
 
                 //sfx
@@ -228,6 +259,33 @@ public class Inputs : MonoBehaviour {
             }
         }
 	}
+
+    /*void BlockNode(int numberOfTiles)
+    {
+        Vector3 mousePosZero = new Vector3(mousePosition.x, mousePosition.y, 0);
+        if (numberOfTiles == 1)
+        {
+            foreach (Node node in GameStats.nodeList)
+            {
+                if (node.location == mousePosZero)
+                {
+                    node.isWalkable = false;
+                }
+            }
+        }
+
+        if (numberOfTiles == 3)
+        {
+            foreach (Node node in GameStats.nodeList)
+            {
+                if (node.location == new Vector3(mousePosZero)
+                {
+                    node.isWalkable = false;
+                }
+            }
+        }
+        
+    }*/
 
 
     void MousePositionGet()
