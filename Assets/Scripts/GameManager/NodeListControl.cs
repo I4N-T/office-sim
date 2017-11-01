@@ -62,16 +62,13 @@ public class NodeListControl : MonoBehaviour {
                 tileBehaviorScript = tile.GetComponent<TileBehavior>();
                 if (tileBehaviorScript.itemOnTile != null)
                 {
-                    
-                    foreach (Node node in GameStats.nodeList)
+                for (int i = 0; i < GameStats.nodeList.Count; i++)
+                {
+                    if (GameStats.nodeList[i].location == tile.transform.position)
                     {
-                        //print("NODE: " + node.location);
-                        //print("TILE: " + tile.transform.position);
-                        if (node.location == tile.transform.position)
-                        {
-                            node.isWalkable = false;
-                        }
+                        GameStats.nodeList[i].isWalkable = false;
                     }
+                }
                 }
         }
 

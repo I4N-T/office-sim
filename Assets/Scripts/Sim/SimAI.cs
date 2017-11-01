@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using System.Collections;
 
 public class SimAI : MonoBehaviour {
@@ -386,8 +387,8 @@ public class SimAI : MonoBehaviour {
                 //if this sim is using this bench already, set target so he stays
                 if (objID == widgetBenchScript.gameObject.GetInstanceID())
                 {
-                    targetPos = widgetBenchScript.widgetBenchUsePos;
-                    
+                    //consider changing position (and thus, this targetPos) of the child object
+                    targetPos = widgetBenchScript.widgetBenchUsePos;                   
                     return;
                 }
 
@@ -567,12 +568,41 @@ public class SimAI : MonoBehaviour {
             }
         }
     }
+
+    //This is needed for use in the TakePath coroutine in pathfindingNew
+    public void GetTargetPos(string itemToTarget)
+    {
+        if (itemToTarget == "WidgetBench")
+        {
+            GetTargetPosWidgetBench();
+        }
+        else if (itemToTarget == "SalesBench")
+        {
+            GetTargetPosSalesBench();
+        }
+        else if (itemToTarget == "DraftingDesk")
+        {
+            GetTargetPosDraftingDesk();
+        }
+        else if (itemToTarget == "Fridge")
+        {
+            GetTargetPosFridge();
+        }
+        else if (itemToTarget == "BathroomStall")
+        {
+            GetTargetPosBathroomStall();
+        }
+        else if (itemToTarget == "CoffeeMachine")
+        {
+            GetTargetPosCoffeeMachine();
+        }
+    }
     //---------------------------------------------------------------------------------------------------------------------------
 
     public void HaulWidget()
     {
         //isUsingWidgetBench = false;
-
+        simPathfindingScript.isGoing = false;
         GetTargetPosHaulDropoff();
         GoToward(targetPos);
 
@@ -584,6 +614,8 @@ public class SimAI : MonoBehaviour {
 
             needToHaul = false;
             simStatsScript.itemInPossession = null;
+            //simPathfindingScript.
+
             //GameStats.countWidgetInStockpile++;
         }
     }
@@ -727,6 +759,15 @@ public class SimAI : MonoBehaviour {
 
                 //TASK COMPLETE
                 simStatsScript.objectInUse = null;
+
+                //this stuff must happen here because of the problem with the goToward fridge coroutine still happening while the task changes
+                StopCoroutine(simFSMScript.cR);
+
+                simPathfindingScript.openNodeList.Clear();
+                simPathfindingScript.closedNodeList.Clear();
+                simPathfindingScript.isStillPathing = false;
+                simPathfindingScript.isRunned = false;
+
                 simFSMScript.taskState = SimFSM.TaskFSM.None;
                 simFSMScript.mainState = SimFSM.MainFSM.Idle;
             }
@@ -744,6 +785,15 @@ public class SimAI : MonoBehaviour {
 
                 //TASK COMPLETE
                 simStatsScript.objectInUse = null;
+
+                //this stuff must happen here because of the problem with the goToward fridge coroutine still happening while the task changes
+                StopCoroutine(simFSMScript.cR);
+
+                simPathfindingScript.openNodeList.Clear();
+                simPathfindingScript.closedNodeList.Clear();
+                simPathfindingScript.isStillPathing = false;
+                simPathfindingScript.isRunned = false;
+
                 simFSMScript.taskState = SimFSM.TaskFSM.None;
                 simFSMScript.mainState = SimFSM.MainFSM.Idle;
             }

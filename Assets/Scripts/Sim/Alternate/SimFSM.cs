@@ -7,6 +7,8 @@ public class SimFSM : MonoBehaviour {
     SimAI simAIScript;
     SimStats simStatsScript;
 
+    public Coroutine cR;
+
 	public enum MainFSM
     {
         Idle,
@@ -53,6 +55,15 @@ public class SimFSM : MonoBehaviour {
                 simAIScript.IdleWander();
                 simStatsScript.objectInUse = null;
                 simAIScript.objID = 0;
+                if ( simAIScript.simPathfindingScript != null)
+                {
+                    simAIScript.simPathfindingScript.isStillPathing = false;
+                    simAIScript.simPathfindingScript.isRunned = false;
+                    if (cR != null)
+                    {
+                        StopCoroutine(cR);
+                    }
+                }  
                 break;
 
             case MainFSM.Task:
@@ -71,14 +82,49 @@ public class SimFSM : MonoBehaviour {
                 break;
 
             case TaskFSM.GettingFood:
-                simAIScript.GetTargetPosFridge();
-                simAIScript.GoToward(simAIScript.targetPos);
+                //simAIScript.simPathfindingScript.isGoing = false;
+
+                if (!simAIScript.simPathfindingScript.isTakePathTime)
+                {
+                    if (!simAIScript.simPathfindingScript.isStillPathing)
+                    {
+                        simAIScript.GetTargetPosFridge();
+                        simAIScript.simPathfindingScript.AStarPathMethod(simAIScript.targetPos);
+                    }
+                    else if (simAIScript.simPathfindingScript.isStillPathing)
+                    {
+                        //do nothing
+                        simAIScript.simPathfindingScript.isGoing = false;
+                    }
+                }
+                else if (simAIScript.simPathfindingScript.isTakePathTime)
+                {
+                    simAIScript.simPathfindingScript.isStillPathing = true;
+                    cR = StartCoroutine(simAIScript.simPathfindingScript.TakePath(simAIScript.targetPos, "Fridge"));
+                    simAIScript.simPathfindingScript.isTakePathTime = false;
+                }
                 break;
 
             case TaskFSM.GettingCoffee:
-                print("getting");
-                simAIScript.GetTargetPosCoffeeMachine();
-                simAIScript.GoToward(simAIScript.targetPos);
+                if (!simAIScript.simPathfindingScript.isTakePathTime)
+                {
+                    if (!simAIScript.simPathfindingScript.isStillPathing)
+                    {
+                        simAIScript.GetTargetPosCoffeeMachine();
+                        simAIScript.simPathfindingScript.AStarPathMethod(simAIScript.targetPos);
+                    }
+                    else if (simAIScript.simPathfindingScript.isStillPathing)
+                    {
+                        //do nothing
+                        simAIScript.simPathfindingScript.isGoing = false;
+                    }
+                }
+                else if (simAIScript.simPathfindingScript.isTakePathTime)
+                {
+                    simAIScript.simPathfindingScript.isStillPathing = true;
+                    cR = StartCoroutine(simAIScript.simPathfindingScript.TakePath(simAIScript.targetPos, "CoffeeMachine"));
+                    simAIScript.simPathfindingScript.isTakePathTime = false;
+                }
                 break;
 
             case TaskFSM.UsingBathroom:
@@ -91,36 +137,95 @@ public class SimFSM : MonoBehaviour {
                 {
                     if (!simAIScript.simPathfindingScript.isTakePathTime)
                     {
-                        simAIScript.GetTargetPosWidgetBench();
-                        simAIScript.simPathfindingScript.AStarPathMethod(simAIScript.targetPos);
-                    }         
-                    else if (simAIScript.simPathfindingScript.isTakePathTime)
-                    {
-                        StartCoroutine(simAIScript.simPathfindingScript.TakePath(simAIScript.targetPos));
-                        //simAIScript.simPathfindingScript.TakePath(simAIScript.targetPos);
-                        simAIScript.simPathfindingScript.isTakePathTime = false;
-
                         if (simAIScript.simPathfindingScript.isGoing)
                         {
                             simAIScript.GoToward(simAIScript.targetPos);
                         }
+                        else if (!simAIScript.simPathfindingScript.isGoing)
+                        {
+                            if (!simAIScript.simPathfindingScript.isStillPathing)
+                            {
+                                simAIScript.GetTargetPosWidgetBench();
+                                simAIScript.simPathfindingScript.AStarPathMethod(simAIScript.targetPos);
+                            }
+                            else if (simAIScript.simPathfindingScript.isStillPathing)
+                            {
+                                //do nothing
+                            }
+                        }
+                    }         
+                    else if (simAIScript.simPathfindingScript.isTakePathTime)
+                    {
+                        simAIScript.simPathfindingScript.isStillPathing = true;
+                        cR = StartCoroutine(simAIScript.simPathfindingScript.TakePath(simAIScript.targetPos, "WidgetBench"));
+                        simAIScript.simPathfindingScript.isTakePathTime = false;   
                     }
                 }
                 else if (simAIScript.needToHaul)
                 {
+                    //simAIScript.GetTargetPosHaulDropOff();
+                    //
                     simAIScript.HaulWidget();
 
                 }
                 break;
 
             case TaskFSM.Sales:
-                simAIScript.GetTargetPosSalesBench();
-                simAIScript.GoToward(simAIScript.targetPos);
+                if (!simAIScript.simPathfindingScript.isTakePathTime)
+                {
+                    if (simAIScript.simPathfindingScript.isGoing)
+                    {
+                        simAIScript.GoToward(simAIScript.targetPos);
+                    }
+                    else if (!simAIScript.simPathfindingScript.isGoing)
+                    {
+                        if (!simAIScript.simPathfindingScript.isStillPathing)
+                        {
+                            simAIScript.GetTargetPosSalesBench();
+                            simAIScript.simPathfindingScript.AStarPathMethod(simAIScript.targetPos);
+                        }
+                        else if (simAIScript.simPathfindingScript.isStillPathing)
+                        {
+                            //do nothing
+                        }
+                    }
+                }
+                else if (simAIScript.simPathfindingScript.isTakePathTime)
+                {
+                    simAIScript.simPathfindingScript.isStillPathing = true;
+                    cR = StartCoroutine(simAIScript.simPathfindingScript.TakePath(simAIScript.targetPos, "SalesBench"));
+                    simAIScript.simPathfindingScript.isTakePathTime = false;
+                    //simAIScript.simPathfindingScript.isGoing = false;
+                }
                 break;
 
             case TaskFSM.Drafting:
-                simAIScript.GetTargetPosDraftingDesk();
-                simAIScript.GoToward(simAIScript.targetPos);
+                if (!simAIScript.simPathfindingScript.isTakePathTime)
+                {
+                    if (simAIScript.simPathfindingScript.isGoing)
+                    {
+                        simAIScript.GoToward(simAIScript.targetPos);
+                    }
+                    else if (!simAIScript.simPathfindingScript.isGoing)
+                    {
+                        if (!simAIScript.simPathfindingScript.isStillPathing)
+                        {
+                            simAIScript.GetTargetPosDraftingDesk();
+                            simAIScript.simPathfindingScript.AStarPathMethod(simAIScript.targetPos);
+                        }
+                        else if (simAIScript.simPathfindingScript.isStillPathing)
+                        {
+                            //do nothing
+                        }
+                    }
+                }
+                else if (simAIScript.simPathfindingScript.isTakePathTime)
+                {
+                    simAIScript.simPathfindingScript.isStillPathing = true;
+                    cR = StartCoroutine(simAIScript.simPathfindingScript.TakePath(simAIScript.targetPos, "DraftingDesk"));
+                    simAIScript.simPathfindingScript.isTakePathTime = false;
+                    //simAIScript.simPathfindingScript.isGoing = false;
+                }
                 break;
 
 

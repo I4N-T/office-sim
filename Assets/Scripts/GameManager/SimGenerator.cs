@@ -19,8 +19,8 @@ public class SimGenerator : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        CreateSims(SimStats.SimJobs.Production, "Testicles");
-        CreateSims(SimStats.SimJobs.Sales, "Barf Penis");
+        CreateSims(SimStats.SimJobs.Production, "Geoffrey");
+        CreateSims(SimStats.SimJobs.Sales, "Charles Barkley");
         CreateSims(SimStats.SimJobs.Sales, "Sales Guy");
     }
 	
